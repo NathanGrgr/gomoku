@@ -1,27 +1,50 @@
-import math
-import cmath
 from tkinter import *
-VIDE = 0
-OCCUPE = 1
-TAILLE_GRILLE = 100
 
-class Canvas_gomoku(Canvas):
-    def __init__(self, fenetre):
-        super().__init__(fenetre, width=500, height=500, bg='white')
-        self.pack()
+Fenetre = Tk()
 
-    def dessine_case(self, x_grille, y_grille, couleur):
-        taille = self.taille_case
-        x, y = x_grille*taille, y_grille*taille
-        x_prime=x+taille
-        y_prime=y+taille
-        self.create_rectangle(x,y,x_prime,y_prime,fill=couleur,outline=couleur)
+area_draw = Canvas(Fenetre,width=225,height=225,bg="white", bd=0)
+area_draw.pack()
+#horizontal
+for i in range(16):
 
-if __name__ == "__main__":
-    fenetre_principale = Tk()
-    fenetre_principale.title("gomoku")
-    fenetre_principale.geometry("600x600")
+    area_draw.create_line(0,0+15,225,0+15, fill="black",width=2)
 
-    grille = [[VIDE for _ in range(100)] for _ in range(100)]
+area_draw.create_line(10,225,10,0, fill="black",width=2)
+Fenetre.mainloop()
 
-    canvas = Canvas_gomoku(fenetre_principale)
+class App(Tk):
+    def __init__(self):
+        super().__init__()
+
+        self.label = Label(self)
+        self.label.pack()
+
+        self.bind("-", lambda e: self.dezoom())
+        self.bind("<BackSpace>", lambda e: self.retour_vue_precedente())
+        self.bind('<Button-1>', lambda e: self.click(e.x, e.y))
+        self.bind('<ButtonRelease-1>', lambda e: self.click_relache(e.x, e.y))
+
+        # gestion des coordonnées pour l'image
+        # au depart on trace l'image de cote [-2, 2]
+        self.xmin, self.ymin = -2, -2
+        self.xmax, self.ymax = 2, 2
+
+        # vous pouvez ajouter des attributes pour gérer le zoom dans un rectangle
+
+    def affiche_image(self, pil_img):
+        """affiche l'image donnée dans tkinter"""
+        tk_img = ImageTk.PhotoImage(pil_img)
+        self.label.configure(image=tk_img)
+        self.label.image = tk_img
+
+    def dezoom(self):
+        print("-") # a modifier
+
+    def click(self, x, y):
+        print("click", x, y) # a modifier
+
+    def click_relache(self, x, y):
+        print("relache", x, y) # a modifier
+
+    def retour_vue_precedente(self):
+        print("retour") # a modifier

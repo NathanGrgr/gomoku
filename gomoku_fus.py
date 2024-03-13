@@ -4,55 +4,16 @@ from random import randint
 
 
 
-FACT=30
+FACT=30 #écart entre chaque case
 LINES=15
 WIDTH=FACT*(LINES-1)
 OFFSET=10
 RADIUS=10
 win_condition=5
-TAILLE_GRILLE=15
+
+#taille grille --> 30
 
 
-class App(Tk):
-    def __init__(self):
-        super().__init__()
-
-        self.label = Label(self)
-        self.label.pack()
-
-        self.taille_case = int(self['width']) // TAILLE_GRILLE
-        self.bind('<Button-1>', lambda e: self.click(e.x, e.y))
-
-    def affiche_image(self, pil_img):
-        """affiche l'image donnée dans tkinter"""
-        tk_img = ImageTk.PhotoImage(pil_img)
-        self.label.configure(image=tk_img)
-        self.label.image = tk_img
-
-    def click(self, x, y):
-        xr=OFFSET+math.floor((x+FACT/2-OFFSET)/FACT)*FACT
-        yr=OFFSET+math.floor((y+FACT/2-OFFSET)/FACT)*FACT
-        print("click", x, y,"->",xr,yr)
-        area_draw.create_oval(xr-RADIUS,yr-RADIUS,xr+RADIUS,yr+RADIUS,fill="black")
-
-    def bot(self):
-        x_grille=randint(0,15)
-        y_grille=randint(0,15)
-        taille = self.taille_case
-        x, y = x_grille*taille, y_grille*taille
-        x_prime=x+taille
-        y_prime=y+taille
-        print("test")
-        area_draw.create_oval(x,y,x_prime,y_prime,fill="red")
-
-
-"""
-self.taille_case = int(self['width']) // TAILLE_GRILLE
-taille = self.taille_case
-x, y = x_grille*taille, y_grille*taille
-x_prime=x+taille
-y_prime=y+taille
-"""
 
 
 class Gomoku:
@@ -122,7 +83,7 @@ class Gomoku:
                                     L_coordonates.append(tuple)
                                     counter+=1
                                     for x in range(4):
-                                        
+
                                         if self.L[i+counter][j-counter]==pawn:
                                             if j-counter<0:
                                                 return("no diag")
@@ -138,42 +99,89 @@ class Gomoku:
 #i nombre de ligne
 #j nombre d'éléments à l'intérieur de la ligne
 
-#00 11 22 
+#00 11 22
 #4,0 3,1 2,2 1,3 0,4
 
 
-if __name__=="__main__":
-    black=Gomoku()
-    white=Gomoku()
-    black.filling(4,0,"black")
-    black.filling(3,1,"black")
-    black.filling(2,2,"black")
-    black.filling(1,3,"black")
-    black.filling(0,4,"black")
+gomoku=Gomoku()
 
-    #for i in range(100):
-        #black.filling(randint(0,14),randint(0,14),"black")
-
-    print(black.condition_verticale("black"))
-    print(black.condition_horizontal("black"))
-    print(black.condition_diagonal("black"))   
-    #print(black.L)
+#for i in range(100):
+    #gomoku.filling(randint(0,14),randint(0,14),"black")
+"""
+print(gomoku.condition_verticale("black"))
+print(gomoku.condition_horizontal("black"))
+print(gomoku.condition_diagonal("black"))
+print(gomoku.L)
+"""
+L=gomoku.L
+COUNTER=0
 
 
 
-    Fenetre = App()
 
-    area_draw = Canvas(Fenetre,width=WIDTH+2*OFFSET,height=WIDTH+2*OFFSET,bg="white", bd=0)
-    area_draw.pack()
-    #horizontal
-    for i in range(LINES):
-        area_draw.create_line(OFFSET,i*FACT+OFFSET,WIDTH+OFFSET,i*FACT+OFFSET, fill="black",width=2)
-    for i in range(LINES):
-        area_draw.create_line(i*FACT+OFFSET,OFFSET,i*FACT+OFFSET,WIDTH+OFFSET, fill="black",width=2)
+class App(Tk):
+    def __init__(self):
+        super().__init__()
 
-    gomoku_test=Gomoku()
-    for i in range(10):
-        gomoku_test.bot()
-        print("ha")
+        self.label = Label(self)
+        self.label.pack()
 
-    Fenetre.mainloop()
+        self.bind('<Button-1>', lambda e: self.click(e.x, e.y))
+
+    def affiche_image(self, pil_img):
+        """affiche l'image donnée dans tkinter"""
+        tk_img = ImageTk.PhotoImage(pil_img)
+        self.label.configure(image=tk_img)
+        self.label.image = tk_img
+
+    def click(self, x, y):
+        xr=OFFSET+math.floor((x+FACT/2-OFFSET)/FACT)*FACT
+        yr=OFFSET+math.floor((y+FACT/2-OFFSET)/FACT)*FACT
+
+
+        x=(xr*LINES)//(WIDTH+2*OFFSET)
+        y=(yr*LINES)//(WIDTH+2*OFFSET)
+        print(x,y)
+        if L[y][x]!=None:
+           L[y][x]="black"
+           area_draw.create_oval(xr-RADIUS,yr-RADIUS,xr+RADIUS,yr+RADIUS,fill="black")
+           print(L)
+        else:
+             pass
+
+
+
+        x_alea=randint(0,WIDTH)
+        y_alea=randint(0,WIDTH)
+        xr=OFFSET+math.floor((x_alea+FACT/2-OFFSET)/FACT)*FACT
+        yr=OFFSET+math.floor((y_alea+FACT/2-OFFSET)/FACT)*FACT
+
+
+        x=(xr*LINES)//(WIDTH+2*OFFSET)
+        y=(yr*LINES)//(WIDTH+2*OFFSET)
+        print(x,y)
+        L[y][x]="white"
+        area_draw.create_oval(xr-RADIUS,yr-RADIUS,xr+RADIUS,yr+RADIUS,fill="white")
+
+
+    def bot(self):
+        pass
+
+
+
+Fenetre = App()
+
+area_draw = Canvas(Fenetre,width=WIDTH+2*OFFSET,height=WIDTH+2*OFFSET,bg="white", bd=0)
+area_draw.pack()
+
+#horizontal
+for i in range(LINES):
+    area_draw.create_line(OFFSET,i*FACT+OFFSET,WIDTH+OFFSET,i*FACT+OFFSET, fill="black",width=2)
+for i in range(LINES):
+    area_draw.create_line(i*FACT+OFFSET,OFFSET,i*FACT+OFFSET,WIDTH+OFFSET, fill="black",width=2)
+
+COUNTER=COUNTER%2
+
+
+
+Fenetre.mainloop()

@@ -1,24 +1,28 @@
 from tkinter import *
 import math
 from random import randint
+from PIL import ImageTk
 
-L_historique_b=[]
-L_historique_n=[]
-FACT=30 #écart entre chaque case
-LINES=15
+L_history_white=[]
+L_history_black=[]
+DIMENSION=15
+FACT=50 #écart entre chaque case
+LINES=DIMENSION
 WIDTH=FACT*(LINES-1)
-OFFSET=10
-RADIUS=10
+OFFSET=20 #remplissage avant
+RADIUS=20 #écart après
 win_condition=5
+nbr_white=0
+nbr_black=0
+
+
 
 #taille case --> 30
 
 
-
-
 class Gomoku:
     def __init__(self):
-        self.L=[[None for i in range(15)] for i in range(15)]
+        self.L=[[None for _ in range(DIMENSION)] for _ in range(DIMENSION)]
 
 
     def filling(self,i,j,pawn):
@@ -105,14 +109,16 @@ class Gomoku:
 
 gomoku=Gomoku()
 
-#for i in range(100):
-    #gomoku.filling(randint(0,14),randint(0,14),"black")
+
 """
 print(gomoku.condition_verticale("black"))
 print(gomoku.condition_horizontal("black"))
 print(gomoku.condition_diagonal("black"))
 print(gomoku.L)
 """
+
+
+
 L=gomoku.L
 COUNTER=0
 
@@ -134,46 +140,65 @@ class App(Tk):
         self.label.configure(image=tk_img)
         self.label.image = tk_img
 
+
     def click(self, x, y):
+        global nbr_white
+        global nbr_black
+
+        nbr_None=counting(L)
+
         xr=OFFSET+math.floor((x+FACT/2-OFFSET)/FACT)*FACT
         yr=OFFSET+math.floor((y+FACT/2-OFFSET)/FACT)*FACT
 
-
         x=(xr*LINES)//(WIDTH+2*OFFSET)
         y=(yr*LINES)//(WIDTH+2*OFFSET)
-        Tuple=(x,y)
-        L_historique_n.append(Tuple)
+        tuple=(x,y)
+        L_history_black.append(tuple)
 
         if L[y][x]==None:
            L[y][x]="black"
            area_draw.create_oval(xr-RADIUS,yr-RADIUS,xr+RADIUS,yr+RADIUS,fill="black")
-           print(L)
-        else:
-             pass
+           nbr_black+=1
 
-
-        if len(L_historique_n)>1:
-            if  L_historique_n[0]!=L_historique_n[1]:
+        if len(L_history_black)>1:
+            if  L_history_black[-2]!=L_history_black[-1]:
                 x_alea=randint(0,WIDTH)
                 y_alea=randint(0,WIDTH)
-
-                Tuple=(x,y)
-                L_historique_b.append(Tuple)
 
                 xr=OFFSET+math.floor((x_alea+FACT/2-OFFSET)/FACT)*FACT
                 yr=OFFSET+math.floor((y_alea+FACT/2-OFFSET)/FACT)*FACT
 
                 x=(xr*LINES)//(WIDTH+2*OFFSET)
                 y=(yr*LINES)//(WIDTH+2*OFFSET)
-                L[y][x]="white"
-                area_draw.create_oval(xr-RADIUS,yr-RADIUS,xr+RADIUS,yr+RADIUS,fill="white")
 
+                if L[y][x]==None and nbr_white==nbr_black-1:
+                    tuple=(x,y)
+                    L_history_white.append(tuple)
+                    L[y][x]="white"
+                    area_draw.create_oval(xr-RADIUS,yr-RADIUS,xr+RADIUS,yr+RADIUS,fill="white")
+                    nbr_white+=1
+                else:
+                    if nbr_None<2:
+                        pass
+                    else:
+                        while L[y][x]!=None:
+                            x_alea=randint(0,WIDTH)
+                            y_alea=randint(0,WIDTH)
+                            xr=OFFSET+math.floor((x_alea+FACT/2-OFFSET)/FACT)*FACT
+                            yr=OFFSET+math.floor((y_alea+FACT/2-OFFSET)/FACT)*FACT
+                            x=(xr*LINES)//(WIDTH+2*OFFSET)
+                            y=(yr*LINES)//(WIDTH+2*OFFSET)
+                            if nbr_white == nbr_black-1 and L[y][x]==None:
+                                L[y][x]="white"
+                                area_draw.create_oval(xr-RADIUS,yr-RADIUS,xr+RADIUS,yr+RADIUS,fill="white")
+                                nbr_white+=1
+                                tuple=(x,y)
+                                L_history_white.append(tuple)
+                                break
 
-        elif len(L_historique_n)==1:
-
+        else:
              x_alea=randint(0,WIDTH)
              y_alea=randint(0,WIDTH)
-
 
              xr=OFFSET+math.floor((x_alea+FACT/2-OFFSET)/FACT)*FACT
              yr=OFFSET+math.floor((y_alea+FACT/2-OFFSET)/FACT)*FACT
@@ -181,20 +206,27 @@ class App(Tk):
              x=(xr*LINES)//(WIDTH+2*OFFSET)
              y=(yr*LINES)//(WIDTH+2*OFFSET)
 
-             Tuple=(x,y)
-             L_historique_b.append(Tuple)
+             tuple=(x,y)
+             L_history_white.append(tuple)
+             if L[y][x]!=None or L[y][x]!="black":
+                L[y][x]="white"
+                area_draw.create_oval(xr-RADIUS,yr-RADIUS,xr+RADIUS,yr+RADIUS,fill="white")
+                nbr_white+=1
 
-             L[y][x]="white"
-             area_draw.create_oval(xr-RADIUS,yr-RADIUS,xr+RADIUS,yr+RADIUS,fill="white")
+        #print(L)
+        #print("black :",nbr_black)
+        #print("white :",nbr_white)
+        #print(L_history_black)
+        #print(L_history_white)
 
 
-
-        print(L_historique_n)
-        print(L_historique_b)
-
-    def bot(self):
-        pass
-
+def counting(L):
+    count=0
+    for i in range(len(L)):
+        for j in range(len(L)):
+            if L[i][j]==None:
+                count+=1
+    return(count)
 
 
 Fenetre = App()

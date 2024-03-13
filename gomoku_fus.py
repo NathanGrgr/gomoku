@@ -11,7 +11,7 @@ OFFSET=10
 RADIUS=10
 win_condition=5
 
-#taille grille --> 30
+#taille case --> 30
 
 
 
@@ -141,6 +141,9 @@ class App(Tk):
 
         x=(xr*LINES)//(WIDTH+2*OFFSET)
         y=(yr*LINES)//(WIDTH+2*OFFSET)
+        Tuple=(x,y)
+        L_historique_n.append(Tuple)
+
         if L[y][x]==None:
            L[y][x]="black"
            area_draw.create_oval(xr-RADIUS,yr-RADIUS,xr+RADIUS,yr+RADIUS,fill="black")
@@ -148,13 +151,15 @@ class App(Tk):
         else:
              pass
 
-        Tuple=(x,y)
-        L_historique_n.append(Tuple)
 
         if len(L_historique_n)>1:
-            if  L_historique_n[0]==L_historique_n[1]:
+            if  L_historique_n[0]!=L_historique_n[1]:
                 x_alea=randint(0,WIDTH)
                 y_alea=randint(0,WIDTH)
+
+                Tuple=(x,y)
+                L_historique_b.append(Tuple)
+
                 xr=OFFSET+math.floor((x_alea+FACT/2-OFFSET)/FACT)*FACT
                 yr=OFFSET+math.floor((y_alea+FACT/2-OFFSET)/FACT)*FACT
 
@@ -162,11 +167,28 @@ class App(Tk):
                 y=(yr*LINES)//(WIDTH+2*OFFSET)
                 L[y][x]="white"
                 area_draw.create_oval(xr-RADIUS,yr-RADIUS,xr+RADIUS,yr+RADIUS,fill="white")
-        else:
-            pass
 
-        Tuple=(x,y)
-        L_historique_b.append(Tuple)
+
+        elif len(L_historique_n)==1:
+
+             x_alea=randint(0,WIDTH)
+             y_alea=randint(0,WIDTH)
+
+
+             xr=OFFSET+math.floor((x_alea+FACT/2-OFFSET)/FACT)*FACT
+             yr=OFFSET+math.floor((y_alea+FACT/2-OFFSET)/FACT)*FACT
+
+             x=(xr*LINES)//(WIDTH+2*OFFSET)
+             y=(yr*LINES)//(WIDTH+2*OFFSET)
+
+             Tuple=(x,y)
+             L_historique_b.append(Tuple)
+
+             L[y][x]="white"
+             area_draw.create_oval(xr-RADIUS,yr-RADIUS,xr+RADIUS,yr+RADIUS,fill="white")
+
+
+
         print(L_historique_n)
         print(L_historique_b)
 
@@ -185,9 +207,6 @@ for i in range(LINES):
     area_draw.create_line(OFFSET,i*FACT+OFFSET,WIDTH+OFFSET,i*FACT+OFFSET, fill="black",width=2)
 for i in range(LINES):
     area_draw.create_line(i*FACT+OFFSET,OFFSET,i*FACT+OFFSET,WIDTH+OFFSET, fill="black",width=2)
-
-COUNTER=COUNTER%2
-
 
 
 Fenetre.mainloop()

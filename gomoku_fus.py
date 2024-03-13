@@ -2,8 +2,8 @@ from tkinter import *
 import math
 from random import randint
 
-
-
+L_historique_b=[]
+L_historique_n=[]
 FACT=30 #écart entre chaque case
 LINES=15
 WIDTH=FACT*(LINES-1)
@@ -141,28 +141,34 @@ class App(Tk):
 
         x=(xr*LINES)//(WIDTH+2*OFFSET)
         y=(yr*LINES)//(WIDTH+2*OFFSET)
-        print(x,y)
-        if L[y][x]!=None:
+        if L[y][x]==None:
            L[y][x]="black"
            area_draw.create_oval(xr-RADIUS,yr-RADIUS,xr+RADIUS,yr+RADIUS,fill="black")
            print(L)
         else:
              pass
 
+        Tuple=(x,y)
+        L_historique_n.append(Tuple)
 
+        if len(L_historique_n)>1:
+            if  L_historique_n[0]==L_historique_n[1]:
+                x_alea=randint(0,WIDTH)
+                y_alea=randint(0,WIDTH)
+                xr=OFFSET+math.floor((x_alea+FACT/2-OFFSET)/FACT)*FACT
+                yr=OFFSET+math.floor((y_alea+FACT/2-OFFSET)/FACT)*FACT
 
-        x_alea=randint(0,WIDTH)
-        y_alea=randint(0,WIDTH)
-        xr=OFFSET+math.floor((x_alea+FACT/2-OFFSET)/FACT)*FACT
-        yr=OFFSET+math.floor((y_alea+FACT/2-OFFSET)/FACT)*FACT
+                x=(xr*LINES)//(WIDTH+2*OFFSET)
+                y=(yr*LINES)//(WIDTH+2*OFFSET)
+                L[y][x]="white"
+                area_draw.create_oval(xr-RADIUS,yr-RADIUS,xr+RADIUS,yr+RADIUS,fill="white")
+        else:
+            pass
 
-
-        x=(xr*LINES)//(WIDTH+2*OFFSET)
-        y=(yr*LINES)//(WIDTH+2*OFFSET)
-        print(x,y)
-        L[y][x]="white"
-        area_draw.create_oval(xr-RADIUS,yr-RADIUS,xr+RADIUS,yr+RADIUS,fill="white")
-
+        Tuple=(x,y)
+        L_historique_b.append(Tuple)
+        print(L_historique_n)
+        print(L_historique_b)
 
     def bot(self):
         pass

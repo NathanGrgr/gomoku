@@ -5,6 +5,8 @@ from PIL import ImageTk
 
 L_history_white=[]
 L_history_black=[]
+L_history_oval_black=[]
+L_history_oval_white=[]
 DIMENSION=15
 FACT=50 #écart entre chaque case
 LINES=DIMENSION
@@ -133,6 +135,7 @@ class App(Tk):
         self.label.pack()
 
         self.bind('<Button-1>', lambda e: self.click(e.x, e.y))
+        self.bind("<BackSpace>", lambda e: self.retour())
 
     def affiche_image(self, pil_img):
         """affiche l'image donnée dans tkinter"""
@@ -157,7 +160,8 @@ class App(Tk):
 
         if L[y][x]==None:
            L[y][x]="black"
-           area_draw.create_oval(xr-RADIUS,yr-RADIUS,xr+RADIUS,yr+RADIUS,fill="black")
+           self.oval_black=area_draw.create_oval(xr-RADIUS,yr-RADIUS,xr+RADIUS,yr+RADIUS,fill="black")
+           L_history_oval_black.append(self.oval_black)
            nbr_black+=1
 
         if len(L_history_black)>1:
@@ -175,7 +179,8 @@ class App(Tk):
                     tuple=(x,y)
                     L_history_white.append(tuple)
                     L[y][x]="white"
-                    area_draw.create_oval(xr-RADIUS,yr-RADIUS,xr+RADIUS,yr+RADIUS,fill="white")
+                    self.oval_white=area_draw.create_oval(xr-RADIUS,yr-RADIUS,xr+RADIUS,yr+RADIUS,fill="white")
+                    L_history_oval_white.append(self.oval_white)
                     nbr_white+=1
                 else:
                     if nbr_None<2:
@@ -190,7 +195,8 @@ class App(Tk):
                             y=(yr*LINES)//(WIDTH+2*OFFSET)
                             if nbr_white == nbr_black-1 and L[y][x]==None:
                                 L[y][x]="white"
-                                area_draw.create_oval(xr-RADIUS,yr-RADIUS,xr+RADIUS,yr+RADIUS,fill="white")
+                                self.oval_white=area_draw.create_oval(xr-RADIUS,yr-RADIUS,xr+RADIUS,yr+RADIUS,fill="white")
+                                L_history_oval_white.append(self.oval_white)
                                 nbr_white+=1
                                 tuple=(x,y)
                                 L_history_white.append(tuple)
@@ -210,7 +216,8 @@ class App(Tk):
              L_history_white.append(tuple)
              if L[y][x]!=None or L[y][x]!="black":
                 L[y][x]="white"
-                area_draw.create_oval(xr-RADIUS,yr-RADIUS,xr+RADIUS,yr+RADIUS,fill="white")
+                self.oval_white=area_draw.create_oval(xr-RADIUS,yr-RADIUS,xr+RADIUS,yr+RADIUS,fill="white")
+                L_history_oval_white.append(self.oval_white)
                 nbr_white+=1
 
         #print(L)
@@ -218,6 +225,46 @@ class App(Tk):
         #print("white :",nbr_white)
         #print(L_history_black)
         #print(L_history_white)
+
+
+
+
+
+
+
+    def retour(self,compt=1):
+        #doit inverser liste historique
+        history_black,history_white=history(L)
+        #test=inverse_list(history_black)
+
+        area_draw.delete(L_history_oval_black[-compt])
+        area_draw.delete(L_history_oval_white[-compt])
+        L[y][x]=None #trouver les coordonnées
+        compt+=1
+
+
+
+def inverse_list(L):
+    L_new=[]
+    for i in range(len(L),-1,-1):
+       L_new.append(L[i])
+    print(L)
+    print(L_new)
+
+
+def history(L):
+    L_history_black_update=[]
+    L_history_white_update=[]
+    for i in range(len(L)):
+        for j in range(len(L)):
+            if L[i][j]=="black":
+               tuple=(i,j)
+               L_history_black_update.append(tuple)
+            elif L[i][j]=="white":
+               tuple=(i,j)
+               L_history_white_update.append(tuple)
+    return(L_history_black_update,L_history_white_update)
+
 
 
 def counting(L):
@@ -228,7 +275,7 @@ def counting(L):
                 count+=1
     return(count)
 
-
+#area_draw.delete()
 Fenetre = App()
 
 area_draw = Canvas(Fenetre,width=WIDTH+2*OFFSET,height=WIDTH+2*OFFSET,bg="white", bd=0)

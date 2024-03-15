@@ -3,6 +3,7 @@ import math
 from random import randint
 from PIL import ImageTk
 
+
 L_history_white=[]
 L_history_black=[]
 L_history_oval_black=[]
@@ -16,7 +17,6 @@ RADIUS=20 #écart après
 win_condition=5
 nbr_white=0
 nbr_black=0
-
 
 
 #taille case --> 30
@@ -105,8 +105,8 @@ class Gomoku:
 #i nombre de ligne
 #j nombre d'éléments à l'intérieur de la ligne
 
-#00 11 22
-#4,0 3,1 2,2 1,3 0,4
+#00 11 22 diag 1
+#4,0 3,1 2,2 1,3 0,4 diag 2
 
 
 gomoku=Gomoku()
@@ -182,6 +182,7 @@ class App(Tk):
                     self.oval_white=area_draw.create_oval(xr-RADIUS,yr-RADIUS,xr+RADIUS,yr+RADIUS,fill="white")
                     L_history_oval_white.append(self.oval_white)
                     nbr_white+=1
+
                 else:
                     if nbr_None<2:
                         pass
@@ -214,7 +215,7 @@ class App(Tk):
 
              tuple=(x,y)
              L_history_white.append(tuple)
-             if L[y][x]!=None or L[y][x]!="black":
+             if L[y][x]==None:
                 L[y][x]="white"
                 self.oval_white=area_draw.create_oval(xr-RADIUS,yr-RADIUS,xr+RADIUS,yr+RADIUS,fill="white")
                 L_history_oval_white.append(self.oval_white)
@@ -233,23 +234,38 @@ class App(Tk):
 
 
     def retour(self,compt=1):
-        #doit inverser liste historique
-        history_black,history_white=history(L)
-        #test=inverse_list(history_black)
+        global nbr_black
+        global nbr_white
 
+        L_history_black_sort,L_history_white_sort=history(L)
         area_draw.delete(L_history_oval_black[-compt])
+        L_history_oval_black.pop(-1)
+
         area_draw.delete(L_history_oval_white[-compt])
-        L[y][x]=None #trouver les coordonnées
+        L_history_oval_white.pop(-1)
+        nbr_black-=1
+        nbr_white-=1
         compt+=1
 
 
+        Tuple_black=L_history_black_sort[-1]
+        x=Tuple_black[0]
+        y=Tuple_black[1]
+        L[y][x]=None
 
-def inverse_list(L):
-    L_new=[]
-    for i in range(len(L),-1,-1):
-       L_new.append(L[i])
-    print(L)
-    print(L_new)
+        Tuple_white=L_history_white_sort[-1]
+        x=Tuple_white[0]
+        y=Tuple_white[1]
+        L[y][x]=None
+
+
+        L_history_black_sort.pop(-1)
+        L_history_white_sort.pop(-1)
+
+        if len(L_history_black_sort)==0:
+            L_history_black=[]
+            L_history_white=[]
+
 
 
 def history(L):
@@ -258,10 +274,10 @@ def history(L):
     for i in range(len(L)):
         for j in range(len(L)):
             if L[i][j]=="black":
-               tuple=(i,j)
+               tuple=(j,i)
                L_history_black_update.append(tuple)
             elif L[i][j]=="white":
-               tuple=(i,j)
+               tuple=(j,i)
                L_history_white_update.append(tuple)
     return(L_history_black_update,L_history_white_update)
 
@@ -275,13 +291,13 @@ def counting(L):
                 count+=1
     return(count)
 
-#area_draw.delete()
+
 Fenetre = App()
 
 area_draw = Canvas(Fenetre,width=WIDTH+2*OFFSET,height=WIDTH+2*OFFSET,bg="white", bd=0)
 area_draw.pack()
 
-#horizontal
+
 for i in range(LINES):
     area_draw.create_line(OFFSET,i*FACT+OFFSET,WIDTH+OFFSET,i*FACT+OFFSET, fill="black",width=2)
 for i in range(LINES):
@@ -289,3 +305,16 @@ for i in range(LINES):
 
 
 Fenetre.mainloop()
+
+
+
+
+
+"""
+def inverse_list(L):
+    L_new=[]
+    for i in range(len(L),-1,-1):
+       L_new.append(L[i])
+    print(L)
+    print(L_new)
+"""

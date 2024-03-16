@@ -4,7 +4,7 @@ from random import randint
 from PIL import ImageTk
 
 
-#faire calcul pour dimension 1er fenetre ligne 123 + bug débordement
+#faire calcul pour dimension 1er fenetre ligne 123 + debug debordement diag
 
 L_history_white=[]
 L_history_black=[]
@@ -19,6 +19,7 @@ RADIUS=20 #écart après
 win_condition=5
 nbr_white=0
 nbr_black=0
+enable_command=True
 
 #taille case --> 30
 
@@ -35,68 +36,63 @@ class Gomoku:
 
     def condition_verticale(self,pawn):
         for i in range(len(self.L)):
-            
-            for j in range(len(self.L)):
+            for j in range(len(self.L)-win_condition+1):
                 counter=0
-                if self.L[i][j]==pawn:
-                    counter+=1
-                    for x in range(4):
-                        if i+x<len(self.L) and self.L[i][j+counter]==pawn:
-                            counter+=1
-                    if counter==win_condition:
-                        return("vertical")
+                for x in range(win_condition):
+                    if self.L[i][j+x]==pawn:
+                        counter+=1
+                if counter==win_condition:
+                    return("vertical")
         return("no vertical")
 
 
     def condition_horizontal(self,pawn):
         for i in range(len(self.L)):
-            L_coordonates=[]
+            for j in range(len(self.L)-win_condition+1):
+                counter=0
+                for x in range(win_condition):
+                    if self.L[j + x][i]==pawn:
+                        counter+=1
+                if counter==win_condition:
+                    return("horizontal")
+        return("no horizontal")
+
+
+    
+    def condition_diagonal(self,pawn):
+        for i in range(len(self.L)):
             counter=0
-            for j in range(len(self.L)):
+            for j in range(len(self.L)-win_condition+1):
+                if self.L[i][j]==pawn:
+                    counter+=1
+                    for x in range(4):
+                        if self.L[i+x][j+x]==pawn:
+                            counter+=1
+                    if counter==win_condition:
+                        return("diag 1")
+        for i in range(len(self.L)):
+            counter=0
+            L_coordonates=[]
+            for j in range(len(self.L)-win_condition+1):
                 if self.L[i][j]==pawn:
                     tuple=(i+counter,j-counter)
                     L_coordonates.append(tuple)
                     counter+=1
                     for x in range(4):
-                        if self.L[i+counter][j]==pawn:
+                        if self.L[i+x][j-x]==pawn:
                             tuple=(i+counter,j-counter)
                             L_coordonates.append(tuple)
                             counter+=1
-                    if counter==win_condition:
-                        return("horizontal")
-        return("no horizontal")
-                    
+                            if counter==win_condition:
+                                return("diag 2")
+        return("no diag")
+
+
+
+
+    
 #L_coordonates --> coordonnées des pions alignées after
 
-    def condition_diagonal(self,pawn):
-        for i in range(len(self.L)):
-            counter=0
-            for j in range(len(self.L)):
-                if self.L[i][j]==pawn:
-                    counter+=1
-                    for x in range(4):
-                        if self.L[i+counter][j+counter]==pawn:
-                            counter+=1
-                    if counter==win_condition:
-                        return("diag 1")
-                    else:
-                        for i in range(len(self.L)):
-                            counter=0
-                            L_coordonates=[]
-                            for j in range(len(self.L)):
-                                if self.L[i][j]==pawn:
-                                    tuple=(i+counter,j-counter)
-                                    L_coordonates.append(tuple)
-                                    counter+=1
-                                    for x in range(4):
-
-                                        if self.L[i+counter][j-counter]==pawn:
-                                            tuple=(i+counter,j-counter)
-                                            L_coordonates.append(tuple)
-                                            counter+=1
-                                    if counter==win_condition:
-                                        return("diag 2")
-        return("no diag")
 
 #i nombre de ligne
 #j nombre d'éléments à l'intérieur de la ligne
@@ -117,7 +113,8 @@ class App(Tk):
         self.label = Label(self)
         self.label.pack()
         
-        self.bind('<Button-1>', lambda e: self.click(e.x, e.y))
+        if enable_command==True:
+            self.bind('<Button-1>', lambda e: self.click(e.x, e.y))
         self.bind("<BackSpace>", lambda e: self.retour())
 
         self.geometry("800x800+520+120")
@@ -132,6 +129,7 @@ class App(Tk):
     def click(self, x, y):
         global nbr_white
         global nbr_black
+        global enable_command
 
         nbr_None=counting(L)
 
@@ -213,18 +211,14 @@ class App(Tk):
         #print(L_history_white)
         
         a=gomoku.condition_verticale("black")
-        #print(a)
-
         b=gomoku.condition_diagonal("black")
-        #print(b)
-
         c=gomoku.condition_horizontal("black")
-        #print(c)
-
 
         if a=="vertical" or b=="diag 1" or b=="diag 2" or c=="horizontal":
-            from tkinter import Tk, Button, Label
+            
+            enable_command=False
 
+            from tkinter import Tk, Button, Label
             class MyWindow(Tk):
 
                 def __init__(self):
@@ -267,10 +261,6 @@ class App(Tk):
             # On crée notre fenêtre et on l'affiche
             window = MyWindow()
             window.mainloop() 
-
-
-
-
 
 
     def retour(self,compt=1):
@@ -320,7 +310,6 @@ def history(L):
                tuple=(j,i)
                L_history_white_update.append(tuple)
     return(L_history_black_update,L_history_white_update)
-
 
 
 def counting(L):

@@ -4,7 +4,7 @@ from random import randint
 from PIL import ImageTk
 
 
-#faire calcul pour dimension 1er fenetre ligne 123 + debug debordement diag
+#faire calcul pour dimension 1er fenetre ligne 123 + debug debordement diag + block dès la partie finie
 
 L_history_white=[]
 L_history_black=[]

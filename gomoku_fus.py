@@ -4,6 +4,8 @@ from random import randint
 from PIL import ImageTk
 
 
+#faire calcul pour dimension 1er fenetre ligne 123
+
 L_history_white=[]
 L_history_black=[]
 L_history_oval_black=[]
@@ -17,7 +19,6 @@ RADIUS=20 #écart après
 win_condition=5
 nbr_white=0
 nbr_black=0
-
 
 #taille case --> 30
 
@@ -34,17 +35,17 @@ class Gomoku:
 
     def condition_verticale(self,pawn):
         for i in range(len(self.L)):
-            counter=0
+            
             for j in range(len(self.L)):
+                counter=0
                 if self.L[i][j]==pawn:
                     counter+=1
                     for x in range(4):
-                        if self.L[i][j+counter]==pawn:
+                        if i+x<len(self.L) and self.L[i][j+counter]==pawn:
                             counter+=1
                     if counter==win_condition:
-                        return("verticale")
-                    else:
-                        return("non verticale")
+                        return("vertical")
+        return("no vertical")
 
 
     def condition_horizontal(self,pawn):
@@ -62,11 +63,10 @@ class Gomoku:
                             L_coordonates.append(tuple)
                             counter+=1
                     if counter==win_condition:
-                        print("horizontale")
-                        return(L_coordonates)
-                    else:
-                        return("non horizontale")
-
+                        return("horizontal")
+        return("no horizontal")
+                    
+#L_coordonates --> coordonnées des pions alignées after
 
     def condition_diagonal(self,pawn):
         for i in range(len(self.L)):
@@ -78,7 +78,7 @@ class Gomoku:
                         if self.L[i+counter][j+counter]==pawn:
                             counter+=1
                     if counter==win_condition:
-                        return("diagonale 1")
+                        return("diag 1")
                     else:
                         for i in range(len(self.L)):
                             counter=0
@@ -91,16 +91,12 @@ class Gomoku:
                                     for x in range(4):
 
                                         if self.L[i+counter][j-counter]==pawn:
-                                            if j-counter<0:
-                                                return("no diag")
                                             tuple=(i+counter,j-counter)
                                             L_coordonates.append(tuple)
                                             counter+=1
                                     if counter==win_condition:
-                                        print("diag 2")
-                                        return(L_coordonates)
-                                    else:
-                                        return("no diag")
+                                        return("diag 2")
+        return("no diag")
 
 #i nombre de ligne
 #j nombre d'éléments à l'intérieur de la ligne
@@ -110,21 +106,8 @@ class Gomoku:
 
 
 gomoku=Gomoku()
-
-
-"""
-print(gomoku.condition_verticale("black"))
-print(gomoku.condition_horizontal("black"))
-print(gomoku.condition_diagonal("black"))
-print(gomoku.L)
-"""
-
-
-
 L=gomoku.L
-COUNTER=0
-
-
+#COUNTER=0
 
 
 class App(Tk):
@@ -133,9 +116,11 @@ class App(Tk):
 
         self.label = Label(self)
         self.label.pack()
-
+        
         self.bind('<Button-1>', lambda e: self.click(e.x, e.y))
         self.bind("<BackSpace>", lambda e: self.retour())
+
+        self.geometry("800x800+520+120")
 
     def affiche_image(self, pil_img):
         """affiche l'image donnée dans tkinter"""
@@ -226,7 +211,62 @@ class App(Tk):
         #print("white :",nbr_white)
         #print(L_history_black)
         #print(L_history_white)
+        
+        a=gomoku.condition_verticale("black")
+        #print(a)
 
+        b=gomoku.condition_diagonal("black")
+        #print(b)
+
+        c=gomoku.condition_horizontal("black")
+        #print(c)
+
+
+        if a=="vertical" or b=="diag 1" or b=="diag 2" or c=="horizontal":
+            from tkinter import Tk, Button, Label
+
+            class MyWindow(Tk):
+
+                def __init__(self):
+                    super().__init__()
+                    label = Label(self, text="Félicitation vous avez gagné", fg="white", bg="#4A919E")
+                    label.pack(side="top", fill='x')
+                    button = Button(self, text="1 Player", fg="white", bg="#FF00FF", command=self.player_vs_bot)
+                    button.place(x=200,y=100)
+                    button1 = Button(self, text=" 2 Player ", command=self.player_vs_player)
+                    button.pack()
+                    button = Button(self, text=" Quitter ", fg="black", bg="blue")
+                    button.place(x=400,y=250)
+                    first_label = Label(self, text=" ", fg="white", bg="#4A919E")
+                    first_label.pack(side="bottom", fill='x')
+                    self.geometry("450x300+700+300")
+                    self.title("GOMOKU")
+
+                #place(x=200,y=100)
+                def player_vs_player(self):
+                    super().__init__()
+                    Label.title("Nouvelle partie Joueur contre Joueur")
+                    print("nv pt ply vs ply")
+                    self.geometry("450x300+700+300")
+                    self.title("Nouvelle partie")
+                def player_vs_bot(self):
+                    super().__init__()
+                    Label.title("Nouvelle partie Joueur contre Bot")
+                    print("nv p bot")
+                    self.geometry("450x300+700+300")
+                    self.title("Nouvelle partie")
+                def do_something(self):
+                    super().__init__()
+                    label = Label(self, text="Félicitation vous avez gagné")
+                    label.pack()
+                    button = Button(self, text="Continue !", command=self.do_something)
+                    button.pack()
+                    self.geometry("450x300+700+300")
+                    self.title("Nouvelle partie")
+
+            # On crée notre fenêtre et on l'affiche
+            window = MyWindow()
+            window.mainloop() 
 
 
 
@@ -305,16 +345,3 @@ for i in range(LINES):
 
 
 Fenetre.mainloop()
-
-
-
-
-
-"""
-def inverse_list(L):
-    L_new=[]
-    for i in range(len(L),-1,-1):
-       L_new.append(L[i])
-    print(L)
-    print(L_new)
-"""

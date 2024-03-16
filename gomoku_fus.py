@@ -4,7 +4,7 @@ from random import randint
 from PIL import ImageTk
 
 
-#faire calcul pour dimension 1er fenetre ligne 123
+#faire calcul pour dimension 1er fenetre ligne 123 + bug débordement
 
 L_history_white=[]
 L_history_black=[]

@@ -1,41 +1,97 @@
-from tkinter import *
-import math
+from tkinter import Tk, Button, Label
 
-FACT=30
-LINES=16
-WIDTH=FACT*(LINES-1)
-OFFSET=10
-RADIUS=10
 
-class App(Tk):
-    def __init__(self):
-        super().__init__()
+def victory():            
+            enable_command=False
+            class MyWindow(Tk):
+                def __init__(self):
+                    super().__init__()
+                    label = Label(self, text="Félicitation vous avez gagné", fg="white", bg="#4A919E")
+                    label.pack(side="top", fill='x')
+                    button = Button(self, text="1 Player", fg="white", bg="#FF00FF", command=self.player_vs_bot)
+                    button.place(x=200,y=100)
+                    button1 = Button(self, text=" 2 Player ", command=self.player_vs_player)
+                    button.pack()
+                    button = Button(self, text=" Quitter ", fg="black", bg="blue")
+                    button.place(x=400,y=250)
+                    first_label = Label(self, text=" ", fg="white", bg="#4A919E")
+                    first_label.pack(side="bottom", fill='x')
+                    self.geometry("450x300+700+300")
+                    self.title("GOMOKU")
 
-        self.label = Label(self)
-        self.label.pack()
+                #place(x=200,y=100)
+                def player_vs_player(self):
+                    super().__init__()
+                    Label.title("Nouvelle partie Joueur contre Joueur")
+                    print("nv pt ply vs ply")
+                    self.geometry("450x300+700+300")
+                    self.title("Nouvelle partie")
+                def player_vs_bot(self):
+                    super().__init__()
+                    Label.title("Nouvelle partie Joueur contre Bot")
+                    print("nv p bot")
+                    self.geometry("450x300+700+300")
+                    self.title("Nouvelle partie")
+                def do_something(self):
+                    super().__init__()
+                    label = Label(self, text="Félicitation vous avez gagné")
+                    label.pack()
+                    button = Button(self, text="Continue !", command=self.do_something)
+                    button.pack()
+                    self.geometry("450x300+700+300")
+                    self.title("Nouvelle partie")
 
-        self.bind('<Button-1>', lambda e: self.click(e.x, e.y))
+            # On crée notre fenêtre et on l'affiche
+            window = MyWindow()
+            window.mainloop() 
 
-    def affiche_image(self, pil_img):
-        """affiche l'image donnée dans tkinter"""
-        tk_img = ImageTk.PhotoImage(pil_img)
-        self.label.configure(image=tk_img)
-        self.label.image = tk_img
 
-    def click(self, x, y):
-        xr=OFFSET+math.floor((x+FACT/2-OFFSET)/FACT)*FACT
-        yr=OFFSET+math.floor((y+FACT/2-OFFSET)/FACT)*FACT
-        print("click", x, y,"->",xr,yr)
-        area_draw.create_oval(xr-RADIUS,yr-RADIUS,xr+RADIUS,yr+RADIUS,fill="black", outline="green")
 
-Fenetre = App()
 
-area_draw = Canvas(Fenetre,width=WIDTH+2*OFFSET,height=WIDTH+2*OFFSET,bg="white", bd=0)
-area_draw.pack()
-#horizontal
-for i in range(LINES):
-    area_draw.create_line(OFFSET,i*FACT+OFFSET,WIDTH+OFFSET,i*FACT+OFFSET, fill="black",width=2)
-for i in range(LINES):
-    area_draw.create_line(i*FACT+OFFSET,OFFSET,i*FACT+OFFSET,WIDTH+OFFSET, fill="black",width=2)
 
-Fenetre.mainloop()
+"""match nul"""
+def draw():  
+            class MyWindow(Tk):
+
+                def __init__(self):
+                    super().__init__()
+                    label = Label(self, text="Match Nul", fg="white", bg="#4A919E")
+                    label.pack(side="top", fill='x')
+                    button = Button(self, text="1 Player", fg="white", bg="#FF00FF", command=self.player_vs_bot)
+                    button.place(x=200,y=100)
+                    button1 = Button(self, text=" 2 Player ", command=self.player_vs_player)
+                    button.pack()
+                    button = Button(self, text=" Quitter ", fg="black", bg="blue")
+                    button.place(x=400,y=250)
+                    first_label = Label(self, text=" ", fg="white", bg="#4A919E")
+                    first_label.pack(side="bottom", fill='x')
+                    self.geometry("450x300+700+300")
+                    self.title("GOMOKU")
+
+                #place(x=200,y=100)
+                def player_vs_player(self):
+                    super().__init__()
+                    Label.title("Nouvelle partie Joueur contre Joueur")
+                    print("nv pt ply vs ply")
+                    self.geometry("450x300+700+300")
+                    self.title("Nouvelle partie")
+                def player_vs_bot(self):
+                    super().__init__()
+                    Label.title("Nouvelle partie Joueur contre Bot")
+                    print("nv p bot")
+                    self.geometry("450x300+700+300")
+                    self.title("Nouvelle partie")
+                def do_something(self):
+                    super().__init__()
+                    label = Label(self, text="Félicitation vous avez gagné")
+                    label.pack()
+                    button = Button(self, text="Continue !", command=self.do_something)
+                    button.pack()
+                    self.geometry("450x300+700+300")
+                    self.title("Nouvelle partie")
+
+            # On crée notre fenêtre et on l'affiche
+            window = MyWindow()
+            window.mainloop() 
+
+

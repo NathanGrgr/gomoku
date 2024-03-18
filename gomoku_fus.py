@@ -331,6 +331,7 @@ if __name__=="__main__":
     for i in range(LINES):
         area_draw.create_line(i*FACT+OFFSET,OFFSET,i*FACT+OFFSET,WIDTH+OFFSET, fill="black",width=2)
 
+
     def botvsbot():
         a=gomoku.condition_verticale("black")
         b=gomoku.condition_diagonal("black")

@@ -26,7 +26,7 @@ nbr_black=0
 enable_command=True
 threshold=int((DIMENSION*DIMENSION)/2)
 input=int(input("Mode PvP (1) or PvAI (2) or AIvAI (3) : "))
-assert 1<=input<=3,"Mauvaise saisie" 
+assert 1<=input<=3,"Mauvaise saisie"
 
 #taille case --> 30
 
@@ -97,7 +97,7 @@ class Gomoku:
                     return("diag 2")
         L_coordonates_diag=[]
         return("no diag")
-    
+
 #L_coordonates --> coordonnées des pions alignées after
 
 #i nombre de ligne
@@ -151,6 +151,7 @@ class App(Tk):
     def click(self, x, y,pawn="black"):
         global nbr_white
         global nbr_black
+
         if input==1:
             global COUNTER
 
@@ -159,7 +160,6 @@ class App(Tk):
                 pawn="black"
             if COUNTER==1:
                 pawn="white"
-            COUNTER+=1
             COUNTER=COUNTER%2
 
             self.tk_vict()
@@ -171,13 +171,17 @@ class App(Tk):
         y=(yr*LINES)//(WIDTH+2*OFFSET)
         tuple=(x,y)
         L_history_black.append(tuple)
+
         if y>14 or x>14:
             pass
-        elif L[y][x]==None:
+
+        elif L[y][x]==None and enable_command==True:
            L[y][x]=pawn
            self.oval_black=area_draw.create_oval(xr-RADIUS,yr-RADIUS,xr+RADIUS,yr+RADIUS,fill=pawn)
            L_history_oval_black.append(self.oval_black)
            nbr_black+=1
+           COUNTER+=1
+
         if input==2:
             self.bot("white")
 
@@ -185,7 +189,7 @@ class App(Tk):
     def bot(self,pawn):
         global nbr_white
         global nbr_black
-        
+
         nbr_None=counting(L)
         if len(L_history_black)>1:
             if  L_history_black[-2]!=L_history_black[-1]:
@@ -249,7 +253,7 @@ class App(Tk):
         #print("None :",nbr_None)
         #print(L_history_black)
         #print(L_history_white)
-                
+
         self.tk_vict()
 
 
@@ -265,10 +269,11 @@ class App(Tk):
         e=gomoku.condition_diagonal("white")
         f=gomoku.condition_horizontal("white")
 
-        if a=="vertical" or b=="diag 1" or b=="diag 2" or c=="horizontal" or d=="vertical" or e=="diag 1" or e=="diag 2" or f=="horizontal" :
+        if a=="vertical" or b=="diag 1" or b=="diag 2" or c=="horizontal" or d=="vertical" or e=="diag 1" or e=="diag 2" or f=="horizontal" and enable_command==True :
+            enable_command=False
             a=(L_coordonates_vert[-win_condition:])
             b=(L_coordonates_hori[-win_condition:])
-            c=(L_coordonates_diag[-win_condition:])     
+            c=(L_coordonates_diag[-win_condition:])
 
             if a!=[]:
                 print(a)
@@ -279,13 +284,16 @@ class App(Tk):
 
             victory()
 
-        elif nbr_black>threshold:
+        elif nbr_black>threshold and enable_command==True:
+            print(enable_command)
             draw()
 
 
     def retour(self,compt=1):
         global nbr_black
         global nbr_white
+
+        enable_command=True
 
         L_history_black_sort,L_history_white_sort=history(L)
         area_draw.delete(L_history_oval_black[-compt])
@@ -309,6 +317,7 @@ class App(Tk):
 
         L_history_black_sort.pop(-1)
         L_history_white_sort.pop(-1)
+        return(enable_command)
 
 
 def counting(L):
@@ -320,35 +329,48 @@ def counting(L):
     return(count)
 
 
-if __name__=="__main__":
-
-    Fenetre = App()
-    area_draw = Canvas(Fenetre,width=WIDTH+2*OFFSET,height=WIDTH+2*OFFSET,bg="grey", bd=0)
-    area_draw.pack()
-
-    for i in range(LINES):
-        area_draw.create_line(OFFSET,i*FACT+OFFSET,WIDTH+OFFSET,i*FACT+OFFSET, fill="black",width=2)
-    for i in range(LINES):
-        area_draw.create_line(i*FACT+OFFSET,OFFSET,i*FACT+OFFSET,WIDTH+OFFSET, fill="black",width=2)
 
 
-    def botvsbot():
-        a=gomoku.condition_verticale("black")
-        b=gomoku.condition_diagonal("black")
-        c=gomoku.condition_horizontal("black")
+def Minimax():
+    compt=0
+    compt=compt%2
+    L_finale=[]
+    for i in range(5):
 
-        d=gomoku.condition_verticale("white")
-        e=gomoku.condition_diagonal("white")
-        f=gomoku.condition_horizontal("white")
+        if compt==0:
+           a=max(5,6)
+           L_finale.append(a)
+        else:
+             b=min(5,6)
+             L_finale.append(b)
+        compt+=1
 
-        while a=="no vertical" or b=="no diag" or c=="no horizontal" or d=="no vertical" or e=="no diag" or f=="no horizontal" :
-            #time.sleep(0.1)
-            Fenetre.bot("black")
-            Fenetre.bot("white")
 
-    if input==3:
-        botvsbot()
 
-    #faire plusieurs instances (2 par 2)
-   
-    Fenetre.mainloop()
+Fenetre = App()
+area_draw = Canvas(Fenetre,width=WIDTH+2*OFFSET,height=WIDTH+2*OFFSET,bg="grey", bd=0)
+area_draw.pack()
+
+for i in range(LINES):
+    area_draw.create_line(OFFSET,i*FACT+OFFSET,WIDTH+OFFSET,i*FACT+OFFSET, fill="black",width=2)
+for i in range(LINES):
+    area_draw.create_line(i*FACT+OFFSET,OFFSET,i*FACT+OFFSET,WIDTH+OFFSET, fill="black",width=2)
+
+
+def botvsbot():
+    a=gomoku.condition_verticale("black")
+    b=gomoku.condition_diagonal("black")
+    c=gomoku.condition_horizontal("black")
+
+    d=gomoku.condition_verticale("white")
+    e=gomoku.condition_diagonal("white")
+    f=gomoku.condition_horizontal("white")
+
+    while a=="no vertical" or b=="no diag" or c=="no horizontal" or d=="no vertical" or e=="no diag" or f=="no horizontal" :
+          Fenetre.bot("black")
+          Fenetre.bot("white")
+
+if input==3:
+    botvsbot()
+
+Fenetre.mainloop()

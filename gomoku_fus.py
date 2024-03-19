@@ -22,7 +22,7 @@ self.oval_white=area_draw.create_oval(xr-RADIUS,yr-RADIUS,xr+RADIUS,yr+RADIUS,fi
 
 # + bug coordonnées validant condition + faire algo alphabeta (minmax)
 # + bug retour player vs player
-
+# faire programme pour compter coordonnées et des qu'on est a 5 on affiche
 
 class MyWindow(Tk):
         """fênetre de départ avec choix du mode"""

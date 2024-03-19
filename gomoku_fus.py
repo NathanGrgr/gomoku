@@ -5,15 +5,85 @@ from PIL import ImageTk
 from gomoku_affichage import *
 import time
 
+
+
+input=0
+
+class MyWindow(Tk):
+        """fênetre de départ avec choix du mode"""
+        def __init__(self):
+            super().__init__()
+            label = Label(self, text="Bienvenue", fg="white", bg="#4A919E")
+            label.pack(side="top", fill='x')
+            button = Button(self, text="Player vs Player", fg="white", bg="#A7001E", command=self.p_vs_p)
+            button.place(x=100,y=110)
+            button = Button(self, text="Player vs Bot", fg="white", bg="#A7001E", command=self.p_vs_bot)
+            button.place(x=300,y=110)
+            button = Button(self, text=" Bot vs Bot ", fg="white", bg="#A7001E", command=self.bot_vs_bot)
+            button.place(x=200,y=110)
+            button = Button(self, text=" Quitter ", fg="red", bg="blue", command=self.quit)
+            button.place(x=390,y=250)
+            first_label = Label(self, text=" ", fg="white", bg="#4A919E")
+            first_label.pack(side="bottom", fill='x')
+            self.geometry("450x300")
+            self.title("GOMOKU")
+
+
+        def do_something(self):
+            super().__init__()
+            label = Label(self, text="Félicitation vous avez gagner")
+            label.pack()
+            button = Button(self, text="Continue !", command=self.do_something)
+            button.pack()
+            self.geometry("450x300")
+            self.title("Nouvelle partie")
+
+
+        def p_vs_p(self):
+            global input
+            input=1
+            self.destroy()
+   
+
+        def p_vs_bot(self):
+            global input
+            input=2
+            self.destroy()
+
+        
+        
+        def bot_vs_bot(self):
+            global input
+            input=3
+            self.destroy()
+
+        
+        def quit(self):
+            global input
+            input=4
+            self.destroy()
+        
+
+# On crée notre fenêtre et on l'affiche
+window = MyWindow()
+window.mainloop()
+
+
+#1 player vs player 
+#2 player vs bot 
+#3 bot vs bot
 #faire calcul pour dimension 1er fenetre gomoku_affichage + mode PvAI + AIvAI
+
 
 L_history_white=[]
 L_history_black=[]
 L_history_oval_black=[]
 L_history_oval_white=[]
+
 L_coordonates_vert=[]
 L_coordonates_hori=[]
 L_coordonates_diag=[]
+
 DIMENSION=15
 FACT=50 #écart entre chaque case
 LINES=DIMENSION
@@ -25,10 +95,9 @@ nbr_white=0
 nbr_black=0
 enable_command=True
 threshold=int((DIMENSION*DIMENSION)/2)
-input=int(input("Mode PvP (1) or PvAI (2) or AIvAI (3) : "))
-assert 1<=input<=3,"Mauvaise saisie"
 
 #taille case --> 30
+
 
 
 class Gomoku:
@@ -40,8 +109,10 @@ class Gomoku:
         self.L[i][j]=pawn
         return (self.L[i][j])
 
+
     def condition_verticale(self,pawn):
         global L_coordonates_vert
+
         for i in range(len(self.L)):
             for j in range(len(self.L)):
                 counter=0
@@ -58,6 +129,7 @@ class Gomoku:
 
     def condition_horizontal(self,pawn):
         global L_coordonates_hori
+
         for i in range(len(self.L)):
             for j in range(len(self.L)):
                 counter=0
@@ -74,6 +146,7 @@ class Gomoku:
 
     def condition_diagonal(self,pawn):
         global L_coordonates_diag
+
         for i in range(len(self.L)):
             for j in range(len(self.L)):
                 counter=0
@@ -108,6 +181,7 @@ class Gomoku:
 
 
 def history(L):
+    """Historique des coordonnées des points placés"""
     L_history_black_update=[]
     L_history_white_update=[]
     for i in range(len(L)):
@@ -126,6 +200,7 @@ L=gomoku.L
 L_history_black_up,L_history_white_up=(history(L))
 pawn="black"
 COUNTER=0
+
 
 class App(Tk):
     def __init__(self):
@@ -149,9 +224,9 @@ class App(Tk):
 
 
     def click(self, x, y,pawn="black"):
-        global nbr_white
-        global nbr_black
+        global nbr_white,nbr_black
 
+        self.tk_vict()
         if input==1:
             global COUNTER
 
@@ -160,9 +235,8 @@ class App(Tk):
                 pawn="black"
             if COUNTER==1:
                 pawn="white"
-            COUNTER=COUNTER%2
 
-            self.tk_vict()
+        self.tk_vict()
 
         xr=OFFSET+math.floor((x+FACT/2-OFFSET)/FACT)*FACT
         yr=OFFSET+math.floor((y+FACT/2-OFFSET)/FACT)*FACT
@@ -187,12 +261,12 @@ class App(Tk):
 
 
     def bot(self,pawn):
-        global nbr_white
-        global nbr_black
+        global nbr_white,nbr_black
 
         nbr_None=counting(L)
         if len(L_history_black)>1:
             if  L_history_black[-2]!=L_history_black[-1]:
+                """Eviter les répétitions"""
                 x_alea=randint(0,WIDTH)
                 y_alea=randint(0,WIDTH)
 
@@ -257,8 +331,9 @@ class App(Tk):
         self.tk_vict()
 
 
-
+    
     def tk_vict(self):
+        """repérage de la condition"""
         global enable_command
 
         a=gomoku.condition_verticale("black")
@@ -271,6 +346,7 @@ class App(Tk):
 
         if a=="vertical" or b=="diag 1" or b=="diag 2" or c=="horizontal" or d=="vertical" or e=="diag 1" or e=="diag 2" or f=="horizontal" and enable_command==True :
             enable_command=False
+
             a=(L_coordonates_vert[-win_condition:])
             b=(L_coordonates_hori[-win_condition:])
             c=(L_coordonates_diag[-win_condition:])
@@ -285,13 +361,13 @@ class App(Tk):
             victory()
 
         elif nbr_black>threshold and enable_command==True:
-            print(enable_command)
             draw()
 
 
     def retour(self,compt=1):
         global nbr_black
         global nbr_white
+        global enable_command
 
         enable_command=True
 
@@ -329,9 +405,8 @@ def counting(L):
     return(count)
 
 
-
-
-def Minimax():
+# début à construire en mode btp
+def alpha_beta():
     compt=0
     compt=compt%2
     L_finale=[]
@@ -346,31 +421,32 @@ def Minimax():
         compt+=1
 
 
+if __name__=="__main__":
+    Fenetre = App()
+    area_draw = Canvas(Fenetre,width=WIDTH+2*OFFSET,height=WIDTH+2*OFFSET,bg="grey", bd=0)
+    area_draw.pack()
 
-Fenetre = App()
-area_draw = Canvas(Fenetre,width=WIDTH+2*OFFSET,height=WIDTH+2*OFFSET,bg="grey", bd=0)
-area_draw.pack()
-
-for i in range(LINES):
-    area_draw.create_line(OFFSET,i*FACT+OFFSET,WIDTH+OFFSET,i*FACT+OFFSET, fill="black",width=2)
-for i in range(LINES):
-    area_draw.create_line(i*FACT+OFFSET,OFFSET,i*FACT+OFFSET,WIDTH+OFFSET, fill="black",width=2)
+    for i in range(LINES):
+        area_draw.create_line(OFFSET,i*FACT+OFFSET,WIDTH+OFFSET,i*FACT+OFFSET, fill="black",width=2)
+    for i in range(LINES):
+        area_draw.create_line(i*FACT+OFFSET,OFFSET,i*FACT+OFFSET,WIDTH+OFFSET, fill="black",width=2)
 
 
-def botvsbot():
-    a=gomoku.condition_verticale("black")
-    b=gomoku.condition_diagonal("black")
-    c=gomoku.condition_horizontal("black")
+    def botvsbot():
+        a=gomoku.condition_verticale("black")
+        b=gomoku.condition_diagonal("black")
+        c=gomoku.condition_horizontal("black")
 
-    d=gomoku.condition_verticale("white")
-    e=gomoku.condition_diagonal("white")
-    f=gomoku.condition_horizontal("white")
+        d=gomoku.condition_verticale("white")
+        e=gomoku.condition_diagonal("white")
+        f=gomoku.condition_horizontal("white")
 
-    while a=="no vertical" or b=="no diag" or c=="no horizontal" or d=="no vertical" or e=="no diag" or f=="no horizontal" :
-          Fenetre.bot("black")
-          Fenetre.bot("white")
+        while a=="no vertical" or b=="no diag" or c=="no horizontal" or d=="no vertical" or e=="no diag" or f=="no horizontal" :
+            Fenetre.bot("black")
+            Fenetre.bot("white")
 
-if input==3:
-    botvsbot()
+    if input==3:
+        botvsbot()
 
-Fenetre.mainloop()
+    if input!=4:
+        Fenetre.mainloop()

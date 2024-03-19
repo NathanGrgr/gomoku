@@ -11,7 +11,7 @@ def victory():
             label = Label(self, text="Bienvenu", fg="white", bg="#4A919E")
             label.pack(side="top", fill='x')
             button = Button(self, text="1 Player", fg="white", bg="#A7001E", command=self.p_vs_bot)
-            button.place(x=150,y=110)
+            button.place(x=100,y=110)
             button = Button(self, text=" 2 Player ", fg="white", bg="#A7001E", command=self.p_vs_p)
             button.place(x=300,y=110)
             button = Button(self, text=" Bot vs Bot ", fg="white", bg="#A7001E", command=self.bot_vs_bot)

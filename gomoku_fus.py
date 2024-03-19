@@ -9,6 +9,21 @@ import time
 
 input=0
 
+"""
+bug Bot vs Bot avec :
+
+line 451, in <module>
+botvsbot()
+line 447, in botvsbot
+Fenetre.bot("black")
+line 322, in bot
+self.oval_white=area_draw.create_oval(xr-RADIUS,yr-RADIUS,xr+RADIUS,yr+RADIUS,fill=pawn)
+"""
+
+# + bug coordonnées validant condition + faire algo alphabeta (minmax)
+# + bug retour player vs player
+
+
 class MyWindow(Tk):
         """fênetre de départ avec choix du mode"""
         def __init__(self):
@@ -38,25 +53,20 @@ class MyWindow(Tk):
             self.geometry("450x300")
             self.title("Nouvelle partie")
 
-
         def p_vs_p(self):
             global input
             input=1
             self.destroy()
-   
 
         def p_vs_bot(self):
             global input
             input=2
             self.destroy()
-
-        
         
         def bot_vs_bot(self):
             global input
             input=3
             self.destroy()
-
         
         def quit(self):
             global input
@@ -405,7 +415,7 @@ def counting(L):
     return(count)
 
 
-# début à construire en mode btp
+# début alpha beta
 def alpha_beta():
     compt=0
     compt=compt%2

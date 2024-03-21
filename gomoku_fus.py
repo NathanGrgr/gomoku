@@ -7,8 +7,6 @@ import time
 
 
 
-input=0
-
 """
 bug Bot vs Bot avec :
 
@@ -23,6 +21,7 @@ self.oval_white=area_draw.create_oval(xr-RADIUS,yr-RADIUS,xr+RADIUS,yr+RADIUS,fi
 # + bug coordonnées validant condition + faire algo alphabeta (minmax)
 # + bug retour player vs player
 # faire programme pour compter coordonnées et des qu'on est a 5 on affiche
+
 
 class MyWindow(Tk):
         """fênetre de départ avec choix du mode"""
@@ -236,7 +235,6 @@ class App(Tk):
     def click(self, x, y,pawn="black"):
         global nbr_white,nbr_black
 
-        self.tk_vict()
         if input==1:
             global COUNTER
 
@@ -290,9 +288,15 @@ class App(Tk):
                     tuple=(x,y)
                     L_history_white.append(tuple)
                     L[y][x]=pawn
-                    self.oval_white=area_draw.create_oval(xr-RADIUS,yr-RADIUS,xr+RADIUS,yr+RADIUS,fill=pawn)
-                    L_history_oval_white.append(self.oval_white)
-                    nbr_white+=1
+
+                    if pawn=="white":
+                        self.oval_white=area_draw.create_oval(xr-RADIUS,yr-RADIUS,xr+RADIUS,yr+RADIUS,fill=pawn)
+                        L_history_oval_white.append(self.oval_white)
+                        nbr_white+=1
+                    else:
+                        self.oval_black=area_draw.create_oval(xr-RADIUS,yr-RADIUS,xr+RADIUS,yr+RADIUS,fill=pawn)
+                        L_history_oval_black.append(self.oval_black)
+                        nbr_black+=1
                 else:
                     if nbr_None<2:
                         pass
@@ -306,11 +310,19 @@ class App(Tk):
                             y=(yr*LINES)//(WIDTH+2*OFFSET)
                             if nbr_white == nbr_black-1 and L[y][x]==None:
                                 L[y][x]=pawn
-                                self.oval_white=area_draw.create_oval(xr-RADIUS,yr-RADIUS,xr+RADIUS,yr+RADIUS,fill=pawn)
-                                L_history_oval_white.append(self.oval_white)
-                                nbr_white+=1
                                 tuple=(x,y)
-                                L_history_white.append(tuple)
+
+                                if pawn=="white":
+                                    self.oval_white=area_draw.create_oval(xr-RADIUS,yr-RADIUS,xr+RADIUS,yr+RADIUS,fill=pawn)
+                                    L_history_oval_white.append(self.oval_white)
+                                    nbr_white+=1
+
+                                    L_history_white.append(tuple)
+                                else:
+                                    self.oval_black=area_draw.create_oval(xr-RADIUS,yr-RADIUS,xr+RADIUS,yr+RADIUS,fill=pawn)
+                                    L_history_oval_black.append(self.oval_black)
+                                    nbr_black+=1
+                                    L_history_black.append(tuple)
                                 break
 
         else:
@@ -327,9 +339,15 @@ class App(Tk):
              L_history_white.append(tuple)
              if L[y][x]==None:
                 L[y][x]=pawn
-                self.oval_white=area_draw.create_oval(xr-RADIUS,yr-RADIUS,xr+RADIUS,yr+RADIUS,fill=pawn)
-                L_history_oval_white.append(self.oval_white)
-                nbr_white+=1
+
+                if pawn=="white":
+                    self.oval_white=area_draw.create_oval(xr-RADIUS,yr-RADIUS,xr+RADIUS,yr+RADIUS,fill=pawn)
+                    L_history_oval_white.append(self.oval_white)
+                    nbr_white+=1
+                else:
+                    self.oval_black=area_draw.create_oval(xr-RADIUS,yr-RADIUS,xr+RADIUS,yr+RADIUS,fill=pawn)
+                    L_history_oval_black.append(self.oval_black)
+                    nbr_black+=1
 
         #print(L)
         #print("black :",nbr_black)
@@ -343,7 +361,7 @@ class App(Tk):
 
     
     def tk_vict(self):
-        """repérage de la condition"""
+        """repérage de fin de partie"""
         global enable_command
 
         a=gomoku.condition_verticale("black")

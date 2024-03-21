@@ -20,11 +20,6 @@ def victory():
                     self.geometry("450x300")
                     self.title("GOMOKU")
 
-                def quitter(self):
-                    super().__init__()
-                    self.geometry("450x300")
-                    self.title("Nouvelle partie")
-
             window = Window()
             window.mainloop()
 

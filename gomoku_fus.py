@@ -1,4 +1,5 @@
 from tkinter import *
+from tkinter import Tk, Button, Label
 import math
 from random import randint
 from PIL import ImageTk
@@ -22,7 +23,7 @@ self.oval_white=area_draw.create_oval(xr-RADIUS,yr-RADIUS,xr+RADIUS,yr+RADIUS,fi
 # + bug retour player vs player
 # faire programme pour compter coordonnées et des qu'on est a 5 on affiche
 
-"""
+
 class MyWindow(Tk):
 
         def __init__(self):
@@ -76,7 +77,7 @@ class MyWindow(Tk):
 # On crée notre fenêtre et on l'affiche
 window = MyWindow()
 window.mainloop()
-"""
+
 
 #1 player vs player
 #2 player vs bot
@@ -226,6 +227,7 @@ class App(Tk):
             self.bind('<Button-1>', lambda e: self.click(e.x, e.y,pawn))
         self.bind("<BackSpace>", lambda e: self.retour())
 
+        button= Button(self,text="reset",fg="white",bg="blue",command=self.reset)
         self.geometry("800x800+520+120")
 
 
@@ -425,6 +427,28 @@ class App(Tk):
         L_history_white_sort.pop(-1)
 
         return(enable_command)
+
+
+
+    def reset(self):
+        L_history_black_sort,L_history_white_sort=history(L)
+        for i in range(len(L_history_black_sort)):
+            Tuple_white=L_history_white_sort[-1]
+            x=Tuple_white[0]
+            y=Tuple_white[1]
+            L[y][x]=None
+
+
+            Tuple_black=L_history_black_sort[-1]
+            x=Tuple_black[0]
+            y=Tuple_black[1]
+            L[y][x]=None
+
+
+            L_history_black_sort.pop(-1)
+            L_history_white_sort.pop(-1)
+
+
 
 
 def counting(L):

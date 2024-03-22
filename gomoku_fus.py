@@ -22,9 +22,9 @@ self.oval_white=area_draw.create_oval(xr-RADIUS,yr-RADIUS,xr+RADIUS,yr+RADIUS,fi
 # + bug retour player vs player
 # faire programme pour compter coordonnées et des qu'on est a 5 on affiche
 
-
+"""
 class MyWindow(Tk):
-        """fênetre de départ avec choix du mode"""
+
         def __init__(self):
             super().__init__()
             label = Label(self, text="Bienvenue", fg="white", bg="#4A919E")
@@ -61,25 +61,25 @@ class MyWindow(Tk):
             global input
             input=2
             self.destroy()
-        
+
         def bot_vs_bot(self):
             global input
             input=3
             self.destroy()
-        
+
         def quit(self):
             global input
             input=4
             self.destroy()
-        
+
 
 # On crée notre fenêtre et on l'affiche
 window = MyWindow()
 window.mainloop()
+"""
 
-
-#1 player vs player 
-#2 player vs bot 
+#1 player vs player
+#2 player vs bot
 #3 bot vs bot
 #faire calcul pour dimension 1er fenetre gomoku_affichage + mode PvAI + AIvAI
 
@@ -131,6 +131,7 @@ class Gomoku:
                         L_coordonates_vert.append(tuple)
                         counter+=1
                 if counter==win_condition:
+                    print(L_coordonates_vert[-win_condition:])
                     return("vertical")
         L_coordonates_vert=[]
         return("no vertical")
@@ -148,6 +149,7 @@ class Gomoku:
                         L_coordonates_hori.append(tuple)
                         counter+=1
                 if counter==win_condition:
+                    print(L_coordonates_hori[-win_condition:])
                     return("horizontal")
         L_coordonates_hori=[]
         return("no horizontal")
@@ -165,6 +167,7 @@ class Gomoku:
                         L_coordonates_diag.append(tuple)
                         counter+=1
                 if counter==win_condition:
+                    print(L_coordonates_diag[-win_condition:])
                     return("diag 1")
         L_coordonates_diag=[]
         for i in range(len(self.L)):
@@ -176,6 +179,7 @@ class Gomoku:
                         L_coordonates_diag.append(tuple)
                         counter+=1
                 if counter==win_condition:
+                    print(L_coordonates_diag[-win_condition:])
                     return("diag 2")
         L_coordonates_diag=[]
         return("no diag")
@@ -245,7 +249,6 @@ class App(Tk):
                 pawn="white"
 
         self.tk_vict()
-
         xr=OFFSET+math.floor((x+FACT/2-OFFSET)/FACT)*FACT
         yr=OFFSET+math.floor((y+FACT/2-OFFSET)/FACT)*FACT
 
@@ -259,13 +262,19 @@ class App(Tk):
 
         elif L[y][x]==None and enable_command==True:
            L[y][x]=pawn
-           self.oval_black=area_draw.create_oval(xr-RADIUS,yr-RADIUS,xr+RADIUS,yr+RADIUS,fill=pawn)
-           L_history_oval_black.append(self.oval_black)
-           nbr_black+=1
+           if pawn=="black":
+              self.oval_black=area_draw.create_oval(xr-RADIUS,yr-RADIUS,xr+RADIUS,yr+RADIUS,fill=pawn)
+              L_history_oval_black.append(self.oval_black)
+              nbr_black+=1
+           else:
+                self.oval_white=area_draw.create_oval(xr-RADIUS,yr-RADIUS,xr+RADIUS,yr+RADIUS,fill=pawn)
+                L_history_oval_white.append(self.oval_white)
+                nbr_white+=1
            COUNTER+=1
 
         if input==2:
             self.bot("white")
+
 
 
     def bot(self,pawn):
@@ -359,7 +368,7 @@ class App(Tk):
         self.tk_vict()
 
 
-    
+
     def tk_vict(self):
         """repérage de fin de partie"""
         global enable_command
@@ -374,17 +383,6 @@ class App(Tk):
 
         if a=="vertical" or b=="diag 1" or b=="diag 2" or c=="horizontal" or d=="vertical" or e=="diag 1" or e=="diag 2" or f=="horizontal" and enable_command==True :
             enable_command=False
-
-            a=(L_coordonates_vert[-win_condition:])
-            b=(L_coordonates_hori[-win_condition:])
-            c=(L_coordonates_diag[-win_condition:])
-
-            if a!=[]:
-                print(a)
-            elif b!=[]:
-                print(b)
-            elif c!=[]:
-                print(c)
 
             victory()
 
@@ -402,25 +400,30 @@ class App(Tk):
         L_history_black_sort,L_history_white_sort=history(L)
         area_draw.delete(L_history_oval_black[-compt])
         L_history_oval_black.pop(-1)
+        nbr_black-=1
 
         area_draw.delete(L_history_oval_white[-compt])
         L_history_oval_white.pop(-1)
-        nbr_black-=1
         nbr_white-=1
+
         compt+=1
 
-        Tuple_black=L_history_black_sort[-1]
-        x=Tuple_black[0]
-        y=Tuple_black[1]
-        L[y][x]=None
 
         Tuple_white=L_history_white_sort[-1]
         x=Tuple_white[0]
         y=Tuple_white[1]
         L[y][x]=None
 
+
+        Tuple_black=L_history_black_sort[-1]
+        x=Tuple_black[0]
+        y=Tuple_black[1]
+        L[y][x]=None
+
+
         L_history_black_sort.pop(-1)
         L_history_white_sort.pop(-1)
+
         return(enable_command)
 
 
@@ -435,18 +438,19 @@ def counting(L):
 
 # début alpha beta
 def alpha_beta():
-    compt=0
-    compt=compt%2
-    L_finale=[]
-    for i in range(5):
+    x_alea=randint(0,WIDTH)
+    y_alea=randint(0,WIDTH)
 
-        if compt==0:
-           a=max(5,6)
-           L_finale.append(a)
-        else:
-             b=min(5,6)
-             L_finale.append(b)
-        compt+=1
+    xr=OFFSET+math.floor((x_alea+FACT/2-OFFSET)/FACT)*FACT
+    yr=OFFSET+math.floor((y_alea+FACT/2-OFFSET)/FACT)*FACT
+
+    x=(xr*LINES)//(WIDTH+2*OFFSET)
+    y=(yr*LINES)//(WIDTH+2*OFFSET)
+    L[x][y]=pawn
+
+    print(L)
+
+
 
 
 if __name__=="__main__":
@@ -470,9 +474,12 @@ if __name__=="__main__":
         f=gomoku.condition_horizontal("white")
 
         while a=="no vertical" or b=="no diag" or c=="no horizontal" or d=="no vertical" or e=="no diag" or f=="no horizontal" :
-            Fenetre.bot("black")
-            Fenetre.bot("white")
+              Fenetre.bot("black")
+              Fenetre.bot("white")
 
+
+
+    print(alpha_beta())
     if input==3:
         botvsbot()
 

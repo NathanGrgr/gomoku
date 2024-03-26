@@ -1,7 +1,7 @@
 from tkinter import *
 from tkinter import Tk, Button, Label
-import math
 from random import randint
+from random import *
 from PIL import ImageTk
 from gomoku_affichage import *
 import time
@@ -460,19 +460,31 @@ def counting(L):
     return(count)
 
 
-# début alpha beta
-def alpha_beta():
-    x_alea=randint(0,WIDTH)
-    y_alea=randint(0,WIDTH)
 
-    xr=OFFSET+math.floor((x_alea+FACT/2-OFFSET)/FACT)*FACT
-    yr=OFFSET+math.floor((y_alea+FACT/2-OFFSET)/FACT)*FACT
+class Monte_Carlo:
+      def __init__(self,valeur=None):
+          self.valeur=valeur
+          self.fils=[]
 
-    x=(xr*LINES)//(WIDTH+2*OFFSET)
-    y=(yr*LINES)//(WIDTH+2*OFFSET)
-    L[x][y]=pawn
 
-    print(L)
+def monte_carlo():
+    L_all_coordonates=[]
+    for i in range(DIMENSION):
+        for j in range(DIMENSION):
+            tuple=(i,j)
+            L_all_coordonates.append(tuple)
+
+    L_fils=L_all_coordonates
+
+    shuffle(L_all_coordonates)
+
+    L_temp=[[None for _ in range(DIMENSION)] for _ in range(DIMENSION)]
+    L_temp[0][0]="black"
+    L_fils.pop(0)
+
+
+    for i in range((DIMENSION*DIMENSION)-2):
+        pass
 
 
 
@@ -503,7 +515,8 @@ if __name__=="__main__":
 
 
 
-    print(alpha_beta())
+    print(monte_carlo())
+
     if input==3:
         botvsbot()
 

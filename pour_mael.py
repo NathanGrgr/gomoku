@@ -1,3 +1,7 @@
+https://www.developpez.net/forums/d448424/autres-langages/python/gui/tkinter/redemarrer-reinitialiser-fenetre/
+
+
+
 from tkinter import *
 import math
 from random import randint

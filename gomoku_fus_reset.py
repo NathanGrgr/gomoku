@@ -1,4 +1,4 @@
-from tkinter import *
+<from tkinter import *
 from tkinter import Tk, Button, Label
 from random import randint
 from random import *
@@ -226,7 +226,7 @@ class App(Tk):
         self.label = Label(self)
         self.label.pack()
 
-        if input!=3:
+        if input!=3 and input!=5:
             self.bind('<Button-1>', lambda e: self.click(e.x, e.y,pawn))
         self.bind("<BackSpace>", lambda e: self.retour())
 
@@ -268,11 +268,11 @@ class App(Tk):
         elif L[y][x]==None and enable_command==True:
            L[y][x]=pawn
            if pawn=="black":
-              self.oval_black=area_draw.create_oval(xr-RADIUS,yr-RADIUS,xr+RADIUS,yr+RADIUS,fill=pawn)
+              self.oval_black=area_draw.create_oval(xr-RADIUS,yr-RADIUS,xr+RADIUS,yr+RADIUS,fill="pink")
               L_history_oval_black.append(self.oval_black)
               nbr_black+=1
            else:
-                self.oval_white=area_draw.create_oval(xr-RADIUS,yr-RADIUS,xr+RADIUS,yr+RADIUS,fill=pawn)
+                self.oval_white=area_draw.create_oval(xr-RADIUS,yr-RADIUS,xr+RADIUS,yr+RADIUS,fill="#00FFFF")
                 L_history_oval_white.append(self.oval_white)
                 nbr_white+=1
            COUNTER+=1
@@ -304,11 +304,11 @@ class App(Tk):
                     L[y][x]=pawn
 
                     if pawn=="white":
-                        self.oval_white=area_draw.create_oval(xr-RADIUS,yr-RADIUS,xr+RADIUS,yr+RADIUS,fill=pawn)
+                        self.oval_white=area_draw.create_oval(xr-RADIUS,yr-RADIUS,xr+RADIUS,yr+RADIUS,fill="#00FFFF")
                         L_history_oval_white.append(self.oval_white)
                         nbr_white+=1
                     else:
-                        self.oval_black=area_draw.create_oval(xr-RADIUS,yr-RADIUS,xr+RADIUS,yr+RADIUS,fill=pawn)
+                        self.oval_black=area_draw.create_oval(xr-RADIUS,yr-RADIUS,xr+RADIUS,yr+RADIUS,fill="pink")
                         L_history_oval_black.append(self.oval_black)
                         nbr_black+=1
                 else:
@@ -327,13 +327,13 @@ class App(Tk):
                                 tuple=(x,y)
 
                                 if pawn=="white":
-                                    self.oval_white=area_draw.create_oval(xr-RADIUS,yr-RADIUS,xr+RADIUS,yr+RADIUS,fill=pawn)
+                                    self.oval_white=area_draw.create_oval(xr-RADIUS,yr-RADIUS,xr+RADIUS,yr+RADIUS,fill="#00FFFF")
                                     L_history_oval_white.append(self.oval_white)
                                     nbr_white+=1
 
                                     L_history_white.append(tuple)
                                 else:
-                                    self.oval_black=area_draw.create_oval(xr-RADIUS,yr-RADIUS,xr+RADIUS,yr+RADIUS,fill=pawn)
+                                    self.oval_black=area_draw.create_oval(xr-RADIUS,yr-RADIUS,xr+RADIUS,yr+RADIUS,fill="pink")
                                     L_history_oval_black.append(self.oval_black)
                                     nbr_black+=1
                                     L_history_black.append(tuple)
@@ -355,11 +355,11 @@ class App(Tk):
                 L[y][x]=pawn
 
                 if pawn=="white":
-                    self.oval_white=area_draw.create_oval(xr-RADIUS,yr-RADIUS,xr+RADIUS,yr+RADIUS,fill=pawn)
+                    self.oval_white=area_draw.create_oval(xr-RADIUS,yr-RADIUS,xr+RADIUS,yr+RADIUS,fill="#00FFFF")
                     L_history_oval_white.append(self.oval_white)
                     nbr_white+=1
                 else:
-                    self.oval_black=area_draw.create_oval(xr-RADIUS,yr-RADIUS,xr+RADIUS,yr+RADIUS,fill=pawn)
+                    self.oval_black=area_draw.create_oval(xr-RADIUS,yr-RADIUS,xr+RADIUS,yr+RADIUS,fill="pink")
                     L_history_oval_black.append(self.oval_black)
                     nbr_black+=1
 
@@ -496,8 +496,8 @@ if __name__=="__main__":
     Fenetre = App()
     area_draw = Canvas(Fenetre,width=WIDTH+2*OFFSET,height=WIDTH+2*OFFSET,bg="grey", bd=0)
     area_draw.pack()
-    button = Button(Fenetre, text=" Reset ", command=Fenetre.reset)
-    button.place(x=0,y=250)
+    button = Button(Fenetre, text=" Reset ",bg="#C1CDCD", command=Fenetre.reset)
+    button.pack()
     def grid(area_draw):
 
         for i in range(LINES):
@@ -531,8 +531,30 @@ if __name__=="__main__":
     if input==5:
         area_draw.delete("all")
         grid(area_draw)
+        """
+        #L_history_black_sort,L_history_white_sort=history(L)
+        L_history_black_sort.clear(),L_history_white_sort.clear()
+        L_history_black.clear(),L_history_white.clear()
+        L_history_black_sort,L_history_white_sort=history(L)
+        """
+        for i in range(len(L_history_black_sort)):
+            Tuple_white=L_history_white_sort[-1]
+            x=Tuple_white[0]
+            y=Tuple_white[1]
+            L[y][x]=None
+
+
+            Tuple_black=L_history_black_sort[-1]
+            x=Tuple_black[0]
+            y=Tuple_black[1]
+            L[y][x]=None
+
+
+            L_history_black_sort.pop(-1)
+            L_history_white_sort.pop(-1)
         L_history_black=[]
         L_history_white=[]
+        L[y][x]=None
 
     if input!=4:
         Fenetre.mainloop()

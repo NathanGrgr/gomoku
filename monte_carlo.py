@@ -102,13 +102,12 @@ nbr_white=0
 """on a au depart black choisit par le joueur puis  avec white on fait jouer 15 parties aléatoires pour chaque coup et win rate"""
 
 pawn="black"
-L_winrate=[]
 counter=0
 L=[[None for _ in range(DIMENSION)] for _ in range(DIMENSION)]
 x_first = int(input("x pour le premier pion (black) : "))
 y_first = int(input("y pour le premier pion (black) : "))
 
-L[x_first][y_first]="black" 
+L[x_first][y_first]="black"
 
 
 
@@ -129,63 +128,72 @@ def monte_carlo():
     global counter,pawn
     global nbr_white,nbr_black,win_rate
 
-    
+
+    L_winrate=[]
 
     gomoku_test=Gomoku()
     L_temp=gomoku_test.L
-    L_temp[0][0]="black"
 
     for i in range(DIMENSION):
         for j in range(DIMENSION):
-
+            winrate=0
             L_temp[i][j]=pawn
             L_all_coordonates=coordonates_generation()
 
-            for x in range((DIMENSION*DIMENSION)-2):
-                
-                if counter % 2 == 0:
-                    pawn="black"
-                else:
-                    pawn="white"
-                counter+=1  
-                a=gomoku_test.condition_verticale("black")
-                b=gomoku_test.condition_diagonal("black")
-                c=gomoku_test.condition_horizontal("black")
-
-                d=gomoku_test.condition_verticale("white")
-                e=gomoku_test.condition_diagonal("white")
-                f=gomoku_test.condition_horizontal("white")
-
-                if a!="no vertical" or b!="no diag" or c!="no horizontal" or d!="no vertical" or e!="no diag" or f!="no horizontal" :
-                    if a!="no vertical" or b!="no diag" or c!="no horizontal":
-                        break
-                    else:
-                        win_rate+=1
-                        break
-                else:
-                    L_temp[L_all_coordonates[x][0]][L_all_coordonates[x][1]]=pawn
-
-                if pawn=="black":
-                    nbr_black+=1
-                    print("black")
-                else:
-                    print("white")
-                    nbr_white+=1
 
 
-            win_rate=int(win_rate/15 *100)
-
-            print(win_rate,"%")
-            
-            print(L_temp)
-            L_temp==[[None for _ in range(DIMENSION)] for _ in range(DIMENSION)]
-            
-            
-
-    return L_temp
+    gomoku_test.L=[[None for _ in range(DIMENSION)] for _ in range(DIMENSION)]
+    L_temp=gomoku_test.L
 
 
 
-monte_carlo()
+    win_rate=int(win_rate/15 *100)
+
+    tuple=((winrate),(i,j))
+    L_winrate.append(tuple)
+
+
+    return L_winrate
+
+
+
+def game_alea():
+    gomoku_test.L=[[None for _ in range(DIMENSION)] for _ in range(DIMENSION)]
+    L_temp=gomoku_test.L
+    for x in range(DIMENSION*DIMENSION):
+        if counter % 2 == 0:
+           pawn="black"
+        else:
+             pawn="white"
+        counter+=1
+
+        if pawn=="black":
+           a=gomoku_test.condition_verticale("black")
+           b=gomoku_test.condition_diagonal("black")
+           c=gomoku_test.condition_horizontal("black")
+           if a!="no vertical" or b!="no diag" or c!="no horizontal":
+              win_rate+=1
+              break
+
+        elif pawn=="white":
+             d=gomoku_test.condition_verticale("white")
+             e=gomoku_test.condition_diagonal("white")
+             f=gomoku_test.condition_horizontal("white")
+             if  d!="no vertical" or e!="no diag" or f!="no horizontal" :
+                 break
+
+
+        L_temp[L_all_coordonates[x][0]][L_all_coordonates[x][1]]=pawn
+
+        print(L_temp)
+
+        if pawn=="black":
+           nbr_black+=1
+        else:
+             nbr_white+=1
+
+
+
+
+print(monte_carlo())
 #print(nbr_black,nbr_white)
-

@@ -3,6 +3,7 @@ from tkinter import Tk, Button, Label
 from random import randint
 from random import *
 from PIL import ImageTk
+import math
 from gomoku_affichage import *
 import time
 
@@ -132,7 +133,7 @@ class Gomoku:
                         L_coordonates_vert.append(tuple)
                         counter+=1
                 if counter==win_condition:
-                    print(L_coordonates_vert[-win_condition:])
+                    #print(L_coordonates_vert[-win_condition:])
                     return("vertical")
         L_coordonates_vert=[]
         return("no vertical")
@@ -150,7 +151,7 @@ class Gomoku:
                         L_coordonates_hori.append(tuple)
                         counter+=1
                 if counter==win_condition:
-                    print(L_coordonates_hori[-win_condition:])
+                    #print(L_coordonates_hori[-win_condition:])
                     return("horizontal")
         L_coordonates_hori=[]
         return("no horizontal")
@@ -168,7 +169,7 @@ class Gomoku:
                         L_coordonates_diag.append(tuple)
                         counter+=1
                 if counter==win_condition:
-                    print(L_coordonates_diag[-win_condition:])
+                    #print(L_coordonates_diag[-win_condition:])
                     return("diag 1")
         L_coordonates_diag=[]
         for i in range(len(self.L)):
@@ -180,7 +181,7 @@ class Gomoku:
                         L_coordonates_diag.append(tuple)
                         counter+=1
                 if counter==win_condition:
-                    print(L_coordonates_diag[-win_condition:])
+                    #print(L_coordonates_diag[-win_condition:])
                     return("diag 2")
         L_coordonates_diag=[]
         return("no diag")
@@ -460,35 +461,6 @@ def counting(L):
     return(count)
 
 
-
-class Monte_Carlo:
-      def __init__(self,valeur=None):
-          self.valeur=valeur
-          self.fils=[]
-
-
-def monte_carlo():
-    L_all_coordonates=[]
-    for i in range(DIMENSION):
-        for j in range(DIMENSION):
-            tuple=(i,j)
-            L_all_coordonates.append(tuple)
-
-    L_fils=L_all_coordonates
-
-    shuffle(L_all_coordonates)
-
-    L_temp=[[None for _ in range(DIMENSION)] for _ in range(DIMENSION)]
-    L_temp[0][0]="black"
-    L_fils.pop(0)
-
-
-    for i in range((DIMENSION*DIMENSION)-2):
-        pass
-
-
-
-
 if __name__=="__main__":
     Fenetre = App()
     area_draw = Canvas(Fenetre,width=WIDTH+2*OFFSET,height=WIDTH+2*OFFSET,bg="grey", bd=0)
@@ -512,10 +484,7 @@ if __name__=="__main__":
         while a=="no vertical" or b=="no diag" or c=="no horizontal" or d=="no vertical" or e=="no diag" or f=="no horizontal" :
               Fenetre.bot("black")
               Fenetre.bot("white")
-
-
-
-    print(monte_carlo())
+              
 
     if input==3:
         botvsbot()

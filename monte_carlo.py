@@ -4,7 +4,7 @@ from random import *
 
 win_condition=5
 
-DIMENSION=15
+DIMENSION=9
 L_coordonates_vert=[]
 L_coordonates_hori=[]
 L_coordonates_diag=[]
@@ -101,15 +101,17 @@ nbr_white=0
 
 """on a au depart black choisit par le joueur puis  avec white on fait jouer 15 parties aléatoires pour chaque coup et win rate"""
 
-pawn="black"
+pawn="white"
 counter=0
-L=[[None for _ in range(DIMENSION)] for _ in range(DIMENSION)]
-x_first = int(input("x pour le premier pion (black) : "))
-y_first = int(input("y pour le premier pion (black) : "))
 
-L[x_first][y_first]="black"
+x_first = 0
+y_first = 0
 
-
+gomoku.L[x_first][y_first]="black"
+L= [[gomoku.L[i][j] for j in range(DIMENSION)] for i in range(DIMENSION)]
+#print(L)
+L_winrate=[]
+L_winrate_coordonates=[]
 
 def coordonates_generation():
     L_all_coordonates=[]
@@ -124,76 +126,101 @@ def coordonates_generation():
 
 
 
-def monte_carlo():
-    global counter,pawn
-    global nbr_white,nbr_black,win_rate
+def monte_carlo(i,j):
+    global counter,pawn,win_rate,L_winrate,L_winrate_coordonates,gomoku
+
+    winrate=0
+    nbr_black=0
+    nbr_white=0
+    
+
+    for x in range(15):
+        L_all_coordonates=coordonates_generation()
+        L_temp= [[L[i][j] for j in range(DIMENSION)] for i in range(DIMENSION)]
+        #print(L_temp)
+        L_temp[i][j]=pawn
+
+        
+        coord_to_remove = (i, j)
+        if coord_to_remove in L_all_coordonates:
+            index = L_all_coordonates.index(coord_to_remove)
+            L_all_coordonates.pop(index)
+        
+        #print(L_temp,"n")
 
 
-    L_winrate=[]
-
-    gomoku_test=Gomoku()
-    L_temp=gomoku_test.L
-
-    for i in range(DIMENSION):
-        for j in range(DIMENSION):
-            winrate=0
-            L_temp[i][j]=pawn
-            L_all_coordonates=coordonates_generation()
+        for k in range(len(L_all_coordonates)):
 
 
+            L_temp[L_all_coordonates[k][0]][L_all_coordonates[k][1]]=pawn
 
-    gomoku_test.L=[[None for _ in range(DIMENSION)] for _ in range(DIMENSION)]
-    L_temp=gomoku_test.L
-
-
-
-    win_rate=int(win_rate/15 *100)
-
-    tuple=((winrate),(i,j))
-    L_winrate.append(tuple)
+            gomoku.L=L_temp
+            counter+=1
+            if counter % 2==0:
+               pawn="white"
+            elif counter%2==1:
+                 pawn="black"
 
 
-    return L_winrate
+            if pawn=="black":
+               a=gomoku.condition_verticale("black")
+               b=gomoku.condition_diagonal("black")
+               c=gomoku.condition_horizontal("black")
 
+               if a!="no vertical" or b!="no diag" or c!="no horizontal":
+                  nbr_black+=1
+                  break
 
+            elif pawn=="white":
+                 d=gomoku.condition_verticale("white")
+                 e=gomoku.condition_diagonal("white")
+                 f=gomoku.condition_horizontal("white")
+                 if d!="no vertical" or e!="no diag" or f!="no horizontal" :
+                    nbr_white+=1
+                    winrate+=1
+                    break
 
-def game_alea():
-    gomoku_test.L=[[None for _ in range(DIMENSION)] for _ in range(DIMENSION)]
-    L_temp=gomoku_test.L
-    for x in range(DIMENSION*DIMENSION):
-        if counter % 2 == 0:
-           pawn="black"
-        else:
-             pawn="white"
-        counter+=1
+            
+            #print(L_temp,"temp",x)
 
-        if pawn=="black":
-           a=gomoku_test.condition_verticale("black")
-           b=gomoku_test.condition_diagonal("black")
-           c=gomoku_test.condition_horizontal("black")
-           if a!="no vertical" or b!="no diag" or c!="no horizontal":
-              win_rate+=1
-              break
+    #print(L_temp)
+    gomoku.L=L
+    
+    L_temp=L
+    #print(L,"L")
+    winrate=int(winrate/15 *100)
 
-        elif pawn=="white":
-             d=gomoku_test.condition_verticale("white")
-             e=gomoku_test.condition_diagonal("white")
-             f=gomoku_test.condition_horizontal("white")
-             if  d!="no vertical" or e!="no diag" or f!="no horizontal" :
-                 break
+    tuple=((i,j),(winrate))
 
+    L_winrate_coordonates.append(tuple)
 
-        L_temp[L_all_coordonates[x][0]][L_all_coordonates[x][1]]=pawn
-
-        print(L_temp)
-
-        if pawn=="black":
-           nbr_black+=1
-        else:
-             nbr_white+=1
+    L_winrate.append(winrate)
 
 
 
 
-print(monte_carlo())
-#print(nbr_black,nbr_white)
+def listage_coordonates(liste_None=[]):
+    for i in range(len(L)):
+        for j in range(len(L)):
+            if L[i][j]==None:
+                liste_None.append((i,j))
+    return(liste_None)
+
+
+
+liste_None=listage_coordonates()
+
+for i in liste_None:
+    monte_carlo(i[0],i[1])
+
+#print(L_winrate)
+
+#print(L_winrate_coordonates)
+#print(gomoku.L)
+
+
+for i in L_winrate_coordonates:
+    if i[1]==max(L_winrate): #and i[0] in liste_None
+        print(i)
+        break
+

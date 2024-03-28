@@ -9,20 +9,7 @@ import time
 from tqdm import tqdm
 
 
-"""
-bug Bot vs Bot avec :
-
-line 451, in <module>
-botvsbot()
-line 447, in botvsbot
-Fenetre.bot("black")
-line 322, in bot
-self.oval_white=area_draw.create_oval(xr-RADIUS,yr-RADIUS,xr+RADIUS,yr+RADIUS,fill=pawn)
-"""
-
-# + bug coordonnées validant condition + faire algo alphabeta (minmax)
-# faire programme pour compter coordonnées et des qu'on est a 5 on affiche
-
+#bug monte carlo pour après 1er itération
 
 class MyWindow(Tk):
 
@@ -94,7 +81,7 @@ L_coordonates_vert=[]
 L_coordonates_hori=[]
 L_coordonates_diag=[]
 
-DIMENSION=7
+DIMENSION=15
 FACT=50 #écart entre chaque case
 LINES=DIMENSION
 WIDTH=FACT*(LINES-1)
@@ -282,25 +269,27 @@ class App(Tk):
     def bot(self,pawn):
         global nbr_white,nbr_black
 
+        print(gomoku.L,"gomoku")
+        print(L,"L")
         nbr_None=counting(L)
         if len(L_history_black)>1:
             if  L_history_black[-2]!=L_history_black[-1]:
                 """Eviter les répétitions"""
                 coup_choisit=exec_monte_carlo()
                 coordonates=coup_choisit[0]
-                x_alea=coordonates[0]
-                y_alea=coordonates[1]
+                x=coordonates[0]
+                y=coordonates[1]
 
-                xr=OFFSET+math.floor((x_alea+FACT/2-OFFSET)/FACT)*FACT
-                yr=OFFSET+math.floor((y_alea+FACT/2-OFFSET)/FACT)*FACT
-
-                x=(xr*LINES)//(WIDTH+2*OFFSET)
-                y=(yr*LINES)//(WIDTH+2*OFFSET)
+                # Calcul des coordonnées correspondantes dans la grille
+                xr=((x*(WIDTH+2*OFFSET))//LINES)+(WIDTH+2*OFFSET)//(2*LINES)
+                yr=((y*(WIDTH+2*OFFSET))//LINES)+(WIDTH+2*OFFSET)//(2*LINES)
+                
 
                 if L[y][x]==None and nbr_white==nbr_black-1:
                     tuple=(x,y)
                     L_history_white.append(tuple)
                     L[y][x]=pawn
+                
 
                     if pawn=="white":
                         self.oval_white=area_draw.create_oval(xr-RADIUS,yr-RADIUS,xr+RADIUS,yr+RADIUS,fill=pawn)
@@ -313,6 +302,7 @@ class App(Tk):
                 else:
                     if nbr_None<2:
                         pass
+                    """
                     else:
                         while L[y][x]!=None:
                             coup_choisit=exec_monte_carlo()
@@ -340,24 +330,22 @@ class App(Tk):
                                     nbr_black+=1
                                     L_history_black.append(tuple)
                                 break
-
+                    """
         else:
              coup_choisit=exec_monte_carlo()
              coordonates=coup_choisit[0]
-             x_alea=coordonates[0]
-             y_alea=coordonates[1]
-
-             xr=OFFSET+math.floor((x_alea+FACT/2-OFFSET)/FACT)*FACT
-             yr=OFFSET+math.floor((y_alea+FACT/2-OFFSET)/FACT)*FACT
-
-             x=(xr*LINES)//(WIDTH+2*OFFSET)
-             y=(yr*LINES)//(WIDTH+2*OFFSET)
+             x=coordonates[0]
+             y=coordonates[1]
+             print(x,y)
+             xr=((x*(WIDTH+2*OFFSET))//LINES)+(WIDTH+2*OFFSET)//(2*LINES)
+             yr=((y*(WIDTH+2*OFFSET))//LINES)+(WIDTH+2*OFFSET)//(2*LINES)
 
              tuple=(x,y)
              L_history_white.append(tuple)
              if L[y][x]==None:
+                
                 L[y][x]=pawn
-
+                print(L)
                 if pawn=="white":
                     self.oval_white=area_draw.create_oval(xr-RADIUS,yr-RADIUS,xr+RADIUS,yr+RADIUS,fill=pawn)
                     L_history_oval_white.append(self.oval_white)
@@ -475,7 +463,6 @@ def counting(L):
 counter=0
 
 L_bot= [[L[i][j] for j in range(DIMENSION)] for i in range(DIMENSION)]
-print(L_bot)
 #print(L)
 L_winrate=[]
 L_winrate_coordonates=[]
@@ -495,7 +482,7 @@ def coordonates_generation():
 
 
 def monte_carlo(i,j):
-    global counter,pawn,L_winrate,L_winrate_coordonates,gomoku
+    global counter,pawn,L_winrate,L_winrate_coordonates,gomoku,L_bot
 
     winrate=0
     nbr_black=0
@@ -538,7 +525,7 @@ def monte_carlo(i,j):
 
                if a!="no vertical" or b!="no diag" or c!="no horizontal":
                   nbr_black+=1
-                  print(gomoku.L,1)
+                  #print(gomoku.L,1)
                   break
 
             elif pawn=="white":
@@ -548,7 +535,7 @@ def monte_carlo(i,j):
                  if d!="no vertical" or e!="no diag" or f!="no horizontal" :
                     nbr_white+=1
                     winrate+=1
-                    print(gomoku.L,2)
+                    #print(gomoku.L,2)
                     break
 
             

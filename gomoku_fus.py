@@ -8,23 +8,6 @@ from gomoku_affichage import *
 import time
 
 
-
-"""
-bug Bot vs Bot avec :
-
-line 451, in <module>
-botvsbot()
-line 447, in botvsbot
-Fenetre.bot("black")
-line 322, in bot
-self.oval_white=area_draw.create_oval(xr-RADIUS,yr-RADIUS,xr+RADIUS,yr+RADIUS,fill=pawn)
-"""
-
-# + bug coordonnées validant condition + faire algo alphabeta (minmax)
-# + bug retour player vs player
-# faire programme pour compter coordonnées et des qu'on est a 5 on affiche
-
-
 class MyWindow(Tk):
 
         def __init__(self):

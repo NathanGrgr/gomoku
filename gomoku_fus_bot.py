@@ -6,7 +6,6 @@ import math
 from PIL import ImageTk
 from gomoku_affichage import *
 import time
-from tqdm import tqdm
 
 
 #bug monte carlo pour après 1er itération
@@ -81,7 +80,7 @@ L_coordonates_vert=[]
 L_coordonates_hori=[]
 L_coordonates_diag=[]
 
-DIMENSION=15
+DIMENSION=7
 FACT=50 #écart entre chaque case
 LINES=DIMENSION
 WIDTH=FACT*(LINES-1)
@@ -269,12 +268,16 @@ class App(Tk):
     def bot(self,pawn):
         global nbr_white,nbr_black
 
-        print(gomoku.L,"gomoku")
+        #print(gomoku.L,"gomoku")
+
         print(L,"L")
+        gomoku.L= [[L[i][j] for j in range(DIMENSION)] for i in range(DIMENSION)]
+        print(gomoku.L,"gomoku L")
         nbr_None=counting(L)
         if len(L_history_black)>1:
             if  L_history_black[-2]!=L_history_black[-1]:
-                """Eviter les répétitions"""
+                L_winrate=[]
+                L_winrate_coordonates=[]
                 coup_choisit=exec_monte_carlo()
                 coordonates=coup_choisit[0]
                 x=coordonates[0]
@@ -283,13 +286,12 @@ class App(Tk):
                 # Calcul des coordonnées correspondantes dans la grille
                 xr=((x*(WIDTH+2*OFFSET))//LINES)+(WIDTH+2*OFFSET)//(2*LINES)
                 yr=((y*(WIDTH+2*OFFSET))//LINES)+(WIDTH+2*OFFSET)//(2*LINES)
-                
+
 
                 if L[y][x]==None and nbr_white==nbr_black-1:
-                    tuple=(x,y)
                     L_history_white.append(tuple)
                     L[y][x]=pawn
-                
+
 
                     if pawn=="white":
                         self.oval_white=area_draw.create_oval(xr-RADIUS,yr-RADIUS,xr+RADIUS,yr+RADIUS,fill=pawn)
@@ -302,50 +304,21 @@ class App(Tk):
                 else:
                     if nbr_None<2:
                         pass
-                    """
-                    else:
-                        while L[y][x]!=None:
-                            coup_choisit=exec_monte_carlo()
-                            coordonates=coup_choisit[0]
-                            x_alea=coordonates[0]
-                            y_alea=coordonates[1]
 
-                            xr=OFFSET+math.floor((x_alea+FACT/2-OFFSET)/FACT)*FACT
-                            yr=OFFSET+math.floor((y_alea+FACT/2-OFFSET)/FACT)*FACT
-                            x=(xr*LINES)//(WIDTH+2*OFFSET)
-                            y=(yr*LINES)//(WIDTH+2*OFFSET)
-                            if nbr_white == nbr_black-1 and L[y][x]==None:
-                                L[y][x]=pawn
-                                tuple=(x,y)
-
-                                if pawn=="white":
-                                    self.oval_white=area_draw.create_oval(xr-RADIUS,yr-RADIUS,xr+RADIUS,yr+RADIUS,fill=pawn)
-                                    L_history_oval_white.append(self.oval_white)
-                                    nbr_white+=1
-
-                                    L_history_white.append(tuple)
-                                else:
-                                    self.oval_black=area_draw.create_oval(xr-RADIUS,yr-RADIUS,xr+RADIUS,yr+RADIUS,fill=pawn)
-                                    L_history_oval_black.append(self.oval_black)
-                                    nbr_black+=1
-                                    L_history_black.append(tuple)
-                                break
-                    """
         else:
              coup_choisit=exec_monte_carlo()
              coordonates=coup_choisit[0]
              x=coordonates[0]
              y=coordonates[1]
-             print(x,y)
              xr=((x*(WIDTH+2*OFFSET))//LINES)+(WIDTH+2*OFFSET)//(2*LINES)
              yr=((y*(WIDTH+2*OFFSET))//LINES)+(WIDTH+2*OFFSET)//(2*LINES)
 
              tuple=(x,y)
              L_history_white.append(tuple)
              if L[y][x]==None:
-                
+
                 L[y][x]=pawn
-                print(L)
+                #print(L)
                 if pawn=="white":
                     self.oval_white=area_draw.create_oval(xr-RADIUS,yr-RADIUS,xr+RADIUS,yr+RADIUS,fill=pawn)
                     L_history_oval_white.append(self.oval_white)
@@ -388,6 +361,7 @@ class App(Tk):
 
 
     def retour(self,compt=1):
+        """Retour au dernier coup joué"""
         global nbr_black
         global nbr_white
         global enable_command
@@ -430,6 +404,7 @@ class App(Tk):
 
 
     def reset(self):
+        """Reset le plateau"""
         L_history_black_sort,L_history_white_sort=history(L)
         for i in range(len(L_history_black_sort)):
             Tuple_white=L_history_white_sort[-1]
@@ -463,6 +438,7 @@ def counting(L):
 counter=0
 
 L_bot= [[L[i][j] for j in range(DIMENSION)] for i in range(DIMENSION)]
+print(L_bot,"L_bot")
 #print(L)
 L_winrate=[]
 L_winrate_coordonates=[]
@@ -487,34 +463,37 @@ def monte_carlo(i,j):
     winrate=0
     nbr_black=0
     nbr_white=0
-    
 
-    for x in range(15):
+
+    for x in range(4):
         L_all_coordonates=coordonates_generation()
         L_temp= [[gomoku.L[i][j] for j in range(DIMENSION)] for i in range(DIMENSION)]
+        if i==0 and j==0:
+           print(L_all_coordonates[-5:])
         #print(L_temp)
         L_temp[i][j]=pawn
 
-        
+
         coord_to_remove = (i, j)
         if coord_to_remove in L_all_coordonates:
             index = L_all_coordonates.index(coord_to_remove)
             L_all_coordonates.pop(index)
-        
+
         #print(L_temp,"n")
 
 
         for k in range(len(L_all_coordonates)):
 
-
+            #print(L_temp)
+            #print(pawn)
             L_temp[L_all_coordonates[k][0]][L_all_coordonates[k][1]]=pawn
 
             gomoku.L=L_temp
             counter+=1
             if counter % 2==0:
-               pawn="white"
+               pawn="black"
             elif counter%2==1:
-                 pawn="black"
+                 pawn="white"
 
 
             if pawn=="black":
@@ -538,15 +517,16 @@ def monte_carlo(i,j):
                     #print(gomoku.L,2)
                     break
 
-            
+
             #print(L_temp,"temp",x)
 
     #print(L_temp)
-    gomoku.L=L_bot
-    
-    L_temp=L_bot
+    gomoku.L=[[L_bot[i][j] for j in range(DIMENSION)] for i in range(DIMENSION)]
+
+    L_temp=[[L_bot[i][j] for j in range(DIMENSION)] for i in range(DIMENSION)]
     #print(L_bot,"L")
-    winrate=int(winrate/15 *100)
+
+    winrate=int(winrate/4 *100)
 
     tuple=((i,j),(winrate))
 
@@ -558,6 +538,8 @@ def monte_carlo(i,j):
 
 
 def listage_coordonates(liste_None=[]):
+    L_winrate=[]
+    L_winrate_coordonates=[]
     for i in range(len(L)):
         for j in range(len(L)):
             if L[i][j]==None:
@@ -574,8 +556,8 @@ def exec_monte_carlo():
         monte_carlo(i[0],i[1])
 
     for i in L_winrate_coordonates:
+        print(i)
         if i[1]==max(L_winrate):
-            print(i)
             return(i)
 
 

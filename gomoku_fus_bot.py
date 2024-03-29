@@ -9,6 +9,9 @@ import time
 
 
 #bug monte carlo pour après 1er itération
+#debug le bot, assembler reset et bot, afficher coordonnées de fin
+#adapter coordonnées avec tous les écrans
+
 
 class MyWindow(Tk):
 
@@ -270,14 +273,13 @@ class App(Tk):
 
         #print(gomoku.L,"gomoku")
 
-        print(L,"L")
+        #print(L,"L")
         gomoku.L= [[L[i][j] for j in range(DIMENSION)] for i in range(DIMENSION)]
-        print(gomoku.L,"gomoku L")
+        #print(gomoku.L,"gomoku L")
         nbr_None=counting(L)
         if len(L_history_black)>1:
             if  L_history_black[-2]!=L_history_black[-1]:
-                L_winrate=[]
-                L_winrate_coordonates=[]
+
                 coup_choisit=exec_monte_carlo()
                 coordonates=coup_choisit[0]
                 x=coordonates[0]
@@ -289,6 +291,7 @@ class App(Tk):
 
 
                 if L[y][x]==None and nbr_white==nbr_black-1:
+                    tuple=(x,y)
                     L_history_white.append(tuple)
                     L[y][x]=pawn
 
@@ -438,7 +441,7 @@ def counting(L):
 counter=0
 
 L_bot= [[L[i][j] for j in range(DIMENSION)] for i in range(DIMENSION)]
-print(L_bot,"L_bot")
+#print(L_bot,"L_bot")
 #print(L)
 L_winrate=[]
 L_winrate_coordonates=[]
@@ -465,11 +468,11 @@ def monte_carlo(i,j):
     nbr_white=0
 
 
-    for x in range(4):
+    for x in range(15):
         L_all_coordonates=coordonates_generation()
         L_temp= [[gomoku.L[i][j] for j in range(DIMENSION)] for i in range(DIMENSION)]
-        if i==0 and j==0:
-           print(L_all_coordonates[-5:])
+        #if i==0 and j==0:
+           #print(L_all_coordonates[-5:])
         #print(L_temp)
         L_temp[i][j]=pawn
 
@@ -488,7 +491,7 @@ def monte_carlo(i,j):
             #print(pawn)
             L_temp[L_all_coordonates[k][0]][L_all_coordonates[k][1]]=pawn
 
-            gomoku.L=L_temp
+            gomoku.L=[[L_temp[i][j] for j in range(DIMENSION)] for i in range(DIMENSION)]
             counter+=1
             if counter % 2==0:
                pawn="black"
@@ -526,20 +529,16 @@ def monte_carlo(i,j):
     L_temp=[[L_bot[i][j] for j in range(DIMENSION)] for i in range(DIMENSION)]
     #print(L_bot,"L")
 
-    winrate=int(winrate/4 *100)
-
+    winrate=int(winrate/15 *100)
     tuple=((i,j),(winrate))
-
     L_winrate_coordonates.append(tuple)
-
     L_winrate.append(winrate)
 
 
 
 
 def listage_coordonates(liste_None=[]):
-    L_winrate=[]
-    L_winrate_coordonates=[]
+    print(L,"L")
     for i in range(len(L)):
         for j in range(len(L)):
             if L[i][j]==None:
@@ -550,14 +549,31 @@ def listage_coordonates(liste_None=[]):
 
 
 def exec_monte_carlo():
+    global L_winrate_coordonates,L_winrate
+    nbr_None=counting(L)
     liste_None=listage_coordonates()
+    
+    lim = nbr_None - len(L_winrate_coordonates)
+
+    liste_None=liste_None[-lim:]
+
+    print(liste_None)
 
     for i in liste_None:
         monte_carlo(i[0],i[1])
 
+    L_winrate_coordonates=L_winrate_coordonates[-lim:]
+
+    L_winrate=L_winrate[-lim:]
+
+    #print(L_winrate_coordonates)
+
     for i in L_winrate_coordonates:
-        print(i)
+        #print(i)
         if i[1]==max(L_winrate):
+            L_winrate.clear()
+            L_winrate_coordonates.clear()
+            #print(L_winrate)
             return(i)
 
 

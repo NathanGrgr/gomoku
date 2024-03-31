@@ -5,7 +5,6 @@ from random import *
 import math
 from PIL import ImageTk
 from gomoku_affichage import *
-import time
 
 
 #bug monte carlo pour après 1er itération
@@ -179,9 +178,6 @@ class Gomoku:
 #i nombre de ligne
 #j nombre d'éléments à l'intérieur de la ligne
 
-#00 11 22 diag 1
-#4,0 3,1 2,2 1,3 0,4 diag 2
-
 
 def history(L):
     """Historique des coordonnées des points placés"""
@@ -228,11 +224,11 @@ class App(Tk):
 
 
     def click(self, x, y,pawn="black"):
+        """à chaque click on met un pion et on fait appel à la méthode bot si besoin"""
         global nbr_white,nbr_black
 
         if input==1:
             global COUNTER
-
             COUNTER=COUNTER%2
             if COUNTER==0:
                 pawn="black"
@@ -317,9 +313,8 @@ class App(Tk):
 
              tuple=(x,y)
              L_history_white.append(tuple)
-             if L[y][x]==None:
-                
 
+             if L[y][x]==None:
                 L[y][x]="white"
                 print(L)
                 self.oval_white=area_draw.create_oval(xr-RADIUS,yr-RADIUS,xr+RADIUS,yr+RADIUS,fill=pawn)
@@ -354,8 +349,105 @@ class App(Tk):
 
 
 
+
+
+    def bot_alea(self,pawn):
+        """bot aléatoire pour Bot vs Bot"""
+        global nbr_white,nbr_black
+
+        nbr_None=counting(L)
+        if len(L_history_black)>1:
+            """Evite les répétitions"""
+            if  L_history_black[-2]!=L_history_black[-1]:
+                
+                x_alea=randint(0,WIDTH)
+                y_alea=randint(0,WIDTH)
+
+                xr=OFFSET+math.floor((x_alea+FACT/2-OFFSET)/FACT)*FACT
+                yr=OFFSET+math.floor((y_alea+FACT/2-OFFSET)/FACT)*FACT
+
+                x=(xr*LINES)//(WIDTH+2*OFFSET)
+                y=(yr*LINES)//(WIDTH+2*OFFSET)
+
+                if L[y][x]==None and nbr_white==nbr_black-1:
+                    tuple=(x,y)
+                    L_history_white.append(tuple)
+                    L[y][x]=pawn
+
+                    if pawn=="white":
+                        self.oval_white=area_draw.create_oval(xr-RADIUS,yr-RADIUS,xr+RADIUS,yr+RADIUS,fill="white")
+                        L_history_oval_white.append(self.oval_white)
+                        nbr_white+=1
+                    else:
+                        self.oval_black=area_draw.create_oval(xr-RADIUS,yr-RADIUS,xr+RADIUS,yr+RADIUS,fill="black")
+                        L_history_oval_black.append(self.oval_black)
+                        nbr_black+=1
+                else:
+                    if nbr_None<2:
+                        pass
+                    else:
+                        while L[y][x]!=None:
+                            x_alea=randint(0,WIDTH)
+                            y_alea=randint(0,WIDTH)
+                            xr=OFFSET+math.floor((x_alea+FACT/2-OFFSET)/FACT)*FACT
+                            yr=OFFSET+math.floor((y_alea+FACT/2-OFFSET)/FACT)*FACT
+                            x=(xr*LINES)//(WIDTH+2*OFFSET)
+                            y=(yr*LINES)//(WIDTH+2*OFFSET)
+                            if nbr_white == nbr_black-1 and L[y][x]==None:
+                                L[y][x]=pawn
+                                tuple=(x,y)
+
+                                if pawn=="white":
+                                    self.oval_white=area_draw.create_oval(xr-RADIUS,yr-RADIUS,xr+RADIUS,yr+RADIUS,fill="white")
+                                    L_history_oval_white.append(self.oval_white)
+                                    nbr_white+=1
+
+                                    L_history_white.append(tuple)
+                                else:
+                                    self.oval_black=area_draw.create_oval(xr-RADIUS,yr-RADIUS,xr+RADIUS,yr+RADIUS,fill="black")
+                                    L_history_oval_black.append(self.oval_black)
+                                    nbr_black+=1
+                                    L_history_black.append(tuple)
+                                break
+
+        else:
+             x_alea=randint(0,WIDTH)
+             y_alea=randint(0,WIDTH)
+
+             xr=OFFSET+math.floor((x_alea+FACT/2-OFFSET)/FACT)*FACT
+             yr=OFFSET+math.floor((y_alea+FACT/2-OFFSET)/FACT)*FACT
+
+             x=(xr*LINES)//(WIDTH+2*OFFSET)
+             y=(yr*LINES)//(WIDTH+2*OFFSET)
+
+             tuple=(x,y)
+             L_history_white.append(tuple)
+             if L[y][x]==None:
+                L[y][x]=pawn
+
+                if pawn=="white":
+                    self.oval_white=area_draw.create_oval(xr-RADIUS,yr-RADIUS,xr+RADIUS,yr+RADIUS,fill="white")
+                    L_history_oval_white.append(self.oval_white)
+                    nbr_white+=1
+                else:
+                    self.oval_black=area_draw.create_oval(xr-RADIUS,yr-RADIUS,xr+RADIUS,yr+RADIUS,fill="black")
+                    L_history_oval_black.append(self.oval_black)
+                    nbr_black+=1
+
+        #print(L)
+        #print("black :",nbr_black)
+        #print("white :",nbr_white)
+        #print("None :",nbr_None)
+        #print(L_history_black)
+        #print(L_history_white)
+
+        self.tk_vict()
+
+
+
+
     def tk_vict(self):
-        """repérage de fin de partie"""
+        """repérage de fin de partie en faisant appel aux fonctions dans gomoku_affichage"""
         global enable_command
 
         a=gomoku.condition_verticale("black")
@@ -368,7 +460,6 @@ class App(Tk):
 
         if a=="vertical" or b=="diag 1" or b=="diag 2" or c=="horizontal" or d=="vertical" or e=="diag 1" or e=="diag 2" or f=="horizontal" and enable_command==True :
             enable_command=False
-
             victory()
 
         elif nbr_black>threshold and enable_command==True:
@@ -417,24 +508,11 @@ class App(Tk):
 
 
     def reset(self):
-        """Reset le plateau"""
-        L_history_black_sort,L_history_white_sort=history(L)
-        for i in range(len(L_history_black_sort)):
-            Tuple_white=L_history_white_sort[-1]
-            x=Tuple_white[0]
-            y=Tuple_white[1]
-            L[y][x]=None
-
-
-            Tuple_black=L_history_black_sort[-1]
-            x=Tuple_black[0]
-            y=Tuple_black[1]
-            L[y][x]=None
-
-
-            L_history_black_sort.pop(-1)
-            L_history_white_sort.pop(-1)
-
+        if len(L_history_oval_black)==0:
+            pass
+        else:
+            for i in range(len(L_history_oval_black)):
+                self.retour()
 
 
 
@@ -458,6 +536,7 @@ L_winrate_coordonates=[]
 
 
 def coordonates_generation():
+    """Generation de coordonnées aléatoires pour monte carlo"""
     L_all_coordonates=[]
     for i in range(DIMENSION):
         for j in range(DIMENSION):
@@ -538,7 +617,6 @@ def monte_carlo(i,j,counter=0):
                     #print(gomoku.L,2)
                     break
 
-
             #print(L_temp,"temp",x)
 
     #print(L_temp)
@@ -606,6 +684,8 @@ if __name__=="__main__":
     Fenetre = App()
     area_draw = Canvas(Fenetre,width=WIDTH+2*OFFSET,height=WIDTH+2*OFFSET,bg="grey", bd=0)
     area_draw.pack()
+    button = Button(Fenetre, text=" Reset ",bg="#C1CDCD", command=Fenetre.reset)
+    button.pack()
 
     for i in range(LINES):
         area_draw.create_line(OFFSET,i*FACT+OFFSET,WIDTH+OFFSET,i*FACT+OFFSET, fill="black",width=2)
@@ -623,8 +703,8 @@ if __name__=="__main__":
         f=gomoku.condition_horizontal("white")
 
         while a=="no vertical" or b=="no diag" or c=="no horizontal" or d=="no vertical" or e=="no diag" or f=="no horizontal" :
-              Fenetre.bot("black")
-              Fenetre.bot("white")
+              Fenetre.bot_alea("black")
+              Fenetre.bot_alea("white")
 
     if input==3:
         botvsbot()

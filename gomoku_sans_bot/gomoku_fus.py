@@ -3,9 +3,8 @@ from tkinter import Tk, Button, Label
 from random import randint
 from random import *
 from PIL import ImageTk
-import math
 from gomoku_affichage import *
-import time
+import math
 
 
 class MyWindow(Tk):
@@ -22,6 +21,7 @@ class MyWindow(Tk):
             button.place(x=200,y=110)
             button = Button(self, text=" Quitter ", fg="red", bg="blue", command=self.quit)
             button.place(x=390,y=250)
+
             first_label = Label(self, text=" ", fg="white", bg="#4A919E")
             first_label.pack(side="bottom", fill='x')
             self.geometry("450x300")
@@ -30,7 +30,7 @@ class MyWindow(Tk):
 
         def do_something(self):
             super().__init__()
-            label = Label(self, text="Félicitation vous avez gagner")
+            label = Label(self, text="Félicitations, vous avez gagné")
             label.pack()
             button = Button(self, text="Continue !", command=self.do_something)
             button.pack()
@@ -56,6 +56,8 @@ class MyWindow(Tk):
             global input
             input=4
             self.destroy()
+
+
 
 
 # On crée notre fenêtre et on l'affiche
@@ -116,7 +118,8 @@ class Gomoku:
                         L_coordonates_vert.append(tuple)
                         counter+=1
                 if counter==win_condition:
-                    #print(L_coordonates_vert[-win_condition:])
+                    print(L_coordonates_vert[-win_condition:])
+                    print(pawn)
                     return("vertical")
         L_coordonates_vert=[]
         return("no vertical")
@@ -134,7 +137,8 @@ class Gomoku:
                         L_coordonates_hori.append(tuple)
                         counter+=1
                 if counter==win_condition:
-                    #print(L_coordonates_hori[-win_condition:])
+                    print(L_coordonates_hori[-win_condition:])
+                    print(pawn)
                     return("horizontal")
         L_coordonates_hori=[]
         return("no horizontal")
@@ -152,7 +156,8 @@ class Gomoku:
                         L_coordonates_diag.append(tuple)
                         counter+=1
                 if counter==win_condition:
-                    #print(L_coordonates_diag[-win_condition:])
+                    print(L_coordonates_diag[-win_condition:])
+                    print(pawn)
                     return("diag 1")
         L_coordonates_diag=[]
         for i in range(len(self.L)):
@@ -164,7 +169,8 @@ class Gomoku:
                         L_coordonates_diag.append(tuple)
                         counter+=1
                 if counter==win_condition:
-                    #print(L_coordonates_diag[-win_condition:])
+                    print(L_coordonates_diag[-win_condition:])
+                    print(pawn)
                     return("diag 2")
         L_coordonates_diag=[]
         return("no diag")
@@ -207,7 +213,7 @@ class App(Tk):
         self.label = Label(self)
         self.label.pack()
 
-        if input!=3:
+        if input!=3 and input!=5:
             self.bind('<Button-1>', lambda e: self.click(e.x, e.y,pawn))
         self.bind("<BackSpace>", lambda e: self.retour())
 
@@ -249,11 +255,11 @@ class App(Tk):
         elif L[y][x]==None and enable_command==True:
            L[y][x]=pawn
            if pawn=="black":
-              self.oval_black=area_draw.create_oval(xr-RADIUS,yr-RADIUS,xr+RADIUS,yr+RADIUS,fill=pawn)
+              self.oval_black=area_draw.create_oval(xr-RADIUS,yr-RADIUS,xr+RADIUS,yr+RADIUS,fill="black")
               L_history_oval_black.append(self.oval_black)
               nbr_black+=1
            else:
-                self.oval_white=area_draw.create_oval(xr-RADIUS,yr-RADIUS,xr+RADIUS,yr+RADIUS,fill=pawn)
+                self.oval_white=area_draw.create_oval(xr-RADIUS,yr-RADIUS,xr+RADIUS,yr+RADIUS,fill="white")
                 L_history_oval_white.append(self.oval_white)
                 nbr_white+=1
            COUNTER+=1
@@ -285,11 +291,11 @@ class App(Tk):
                     L[y][x]=pawn
 
                     if pawn=="white":
-                        self.oval_white=area_draw.create_oval(xr-RADIUS,yr-RADIUS,xr+RADIUS,yr+RADIUS,fill=pawn)
+                        self.oval_white=area_draw.create_oval(xr-RADIUS,yr-RADIUS,xr+RADIUS,yr+RADIUS,fill="white")
                         L_history_oval_white.append(self.oval_white)
                         nbr_white+=1
                     else:
-                        self.oval_black=area_draw.create_oval(xr-RADIUS,yr-RADIUS,xr+RADIUS,yr+RADIUS,fill=pawn)
+                        self.oval_black=area_draw.create_oval(xr-RADIUS,yr-RADIUS,xr+RADIUS,yr+RADIUS,fill="black")
                         L_history_oval_black.append(self.oval_black)
                         nbr_black+=1
                 else:
@@ -308,13 +314,13 @@ class App(Tk):
                                 tuple=(x,y)
 
                                 if pawn=="white":
-                                    self.oval_white=area_draw.create_oval(xr-RADIUS,yr-RADIUS,xr+RADIUS,yr+RADIUS,fill=pawn)
+                                    self.oval_white=area_draw.create_oval(xr-RADIUS,yr-RADIUS,xr+RADIUS,yr+RADIUS,fill="white")
                                     L_history_oval_white.append(self.oval_white)
                                     nbr_white+=1
 
                                     L_history_white.append(tuple)
                                 else:
-                                    self.oval_black=area_draw.create_oval(xr-RADIUS,yr-RADIUS,xr+RADIUS,yr+RADIUS,fill=pawn)
+                                    self.oval_black=area_draw.create_oval(xr-RADIUS,yr-RADIUS,xr+RADIUS,yr+RADIUS,fill="black")
                                     L_history_oval_black.append(self.oval_black)
                                     nbr_black+=1
                                     L_history_black.append(tuple)
@@ -336,11 +342,11 @@ class App(Tk):
                 L[y][x]=pawn
 
                 if pawn=="white":
-                    self.oval_white=area_draw.create_oval(xr-RADIUS,yr-RADIUS,xr+RADIUS,yr+RADIUS,fill=pawn)
+                    self.oval_white=area_draw.create_oval(xr-RADIUS,yr-RADIUS,xr+RADIUS,yr+RADIUS,fill="white")
                     L_history_oval_white.append(self.oval_white)
                     nbr_white+=1
                 else:
-                    self.oval_black=area_draw.create_oval(xr-RADIUS,yr-RADIUS,xr+RADIUS,yr+RADIUS,fill=pawn)
+                    self.oval_black=area_draw.create_oval(xr-RADIUS,yr-RADIUS,xr+RADIUS,yr+RADIUS,fill="black")
                     L_history_oval_black.append(self.oval_black)
                     nbr_black+=1
 
@@ -415,23 +421,11 @@ class App(Tk):
 
 
     def reset(self):
-        L_history_black_sort,L_history_white_sort=history(L)
-        for i in range(len(L_history_black_sort)):
-            Tuple_white=L_history_white_sort[-1]
-            x=Tuple_white[0]
-            y=Tuple_white[1]
-            L[y][x]=None
+        global enable_command
 
-
-            Tuple_black=L_history_black_sort[-1]
-            x=Tuple_black[0]
-            y=Tuple_black[1]
-            L[y][x]=None
-
-
-            L_history_black_sort.pop(-1)
-            L_history_white_sort.pop(-1)
-
+        enable_command=False
+        for i in range(len(L_history_oval_black)):
+            self.retour()
 
 
 
@@ -444,16 +438,54 @@ def counting(L):
     return(count)
 
 
+
+class Monte_Carlo:
+      def __init__(self,valeur=None):
+          self.valeur=valeur
+          self.fils=[]
+
+
+def monte_carlo():
+    L_all_coordonates=[]
+    for i in range(DIMENSION):
+        for j in range(DIMENSION):
+            tuple=(i,j)
+            L_all_coordonates.append(tuple)
+
+    L_fils=L_all_coordonates
+
+    shuffle(L_all_coordonates)
+
+    L_temp=[[None for _ in range(DIMENSION)] for _ in range(DIMENSION)]
+    L_temp[0][0]="black"
+    L_fils.pop(0)
+
+
+    for i in range((DIMENSION*DIMENSION)-2):
+        pass
+
+
+
+
 if __name__=="__main__":
     Fenetre = App()
     area_draw = Canvas(Fenetre,width=WIDTH+2*OFFSET,height=WIDTH+2*OFFSET,bg="grey", bd=0)
     area_draw.pack()
+    button = Button(Fenetre, text=" Reset ",bg="#C1CDCD", command=Fenetre.reset)
+    button.pack()
 
-    for i in range(LINES):
-        area_draw.create_line(OFFSET,i*FACT+OFFSET,WIDTH+OFFSET,i*FACT+OFFSET, fill="black",width=2)
-    for i in range(LINES):
-        area_draw.create_line(i*FACT+OFFSET,OFFSET,i*FACT+OFFSET,WIDTH+OFFSET, fill="black",width=2)
+    def grid(area_draw):
 
+        for i in range(LINES):
+            area_draw.create_line(OFFSET,i*FACT+OFFSET,WIDTH+OFFSET,i*FACT+OFFSET, fill="black",width=2)
+        for i in range(LINES):
+            area_draw.create_line(i*FACT+OFFSET,OFFSET,i*FACT+OFFSET,WIDTH+OFFSET, fill="black",width=2)
+    grid(area_draw)
+
+    def reset(self):
+        global input
+        input=5
+        self.destroy()
 
     def botvsbot():
         a=gomoku.condition_verticale("black")
@@ -467,7 +499,10 @@ if __name__=="__main__":
         while a=="no vertical" or b=="no diag" or c=="no horizontal" or d=="no vertical" or e=="no diag" or f=="no horizontal" :
               Fenetre.bot("black")
               Fenetre.bot("white")
-              
+
+
+
+    print(monte_carlo())
 
     if input==3:
         botvsbot()

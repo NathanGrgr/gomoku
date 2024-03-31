@@ -7,10 +7,6 @@ from PIL import ImageTk
 from gomoku_affichage import *
 
 
-#bug monte carlo pour après 1er itération
-#debug le bot, assembler reset et bot, afficher coordonnées de fin
-#adapter coordonnées avec tous les écrans
-
 
 class MyWindow(Tk):
 

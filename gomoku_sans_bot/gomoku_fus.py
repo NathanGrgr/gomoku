@@ -423,9 +423,12 @@ class App(Tk):
     def reset(self):
         global enable_command
 
-        enable_command=False
-        for i in range(len(L_history_oval_black)):
-            self.retour()
+        #enable_command=False
+        if len(L_history_oval_black)==0:
+            pass
+        else:
+            for i in range(len(L_history_oval_black)):
+                self.retour()
 
 
 
@@ -436,33 +439,6 @@ def counting(L):
             if L[i][j]==None:
                 count+=1
     return(count)
-
-
-
-class Monte_Carlo:
-      def __init__(self,valeur=None):
-          self.valeur=valeur
-          self.fils=[]
-
-
-def monte_carlo():
-    L_all_coordonates=[]
-    for i in range(DIMENSION):
-        for j in range(DIMENSION):
-            tuple=(i,j)
-            L_all_coordonates.append(tuple)
-
-    L_fils=L_all_coordonates
-
-    shuffle(L_all_coordonates)
-
-    L_temp=[[None for _ in range(DIMENSION)] for _ in range(DIMENSION)]
-    L_temp[0][0]="black"
-    L_fils.pop(0)
-
-
-    for i in range((DIMENSION*DIMENSION)-2):
-        pass
 
 
 
@@ -499,10 +475,6 @@ if __name__=="__main__":
         while a=="no vertical" or b=="no diag" or c=="no horizontal" or d=="no vertical" or e=="no diag" or f=="no horizontal" :
               Fenetre.bot("black")
               Fenetre.bot("white")
-
-
-
-    print(monte_carlo())
 
     if input==3:
         botvsbot()

@@ -66,7 +66,6 @@ window.mainloop()
 #1 player vs player
 #2 player vs bot
 #3 bot vs bot
-#faire calcul pour dimension 1er fenetre gomoku_affichage + mode PvAI + AIvAI
 
 
 L_history_white=[]
@@ -169,7 +168,7 @@ class Gomoku:
         L_coordonates_diag=[]
         return("no diag")
 
-#L_coordonates --> coordonnées des pions alignées after
+#L_coordonates --> coordonnées des pions alignées 
 
 #i nombre de ligne
 #j nombre d'éléments à l'intérieur de la ligne
@@ -264,11 +263,7 @@ class App(Tk):
     def bot(self,pawn):
         global nbr_white,nbr_black
 
-        #print(gomoku.L,"gomoku")
-
-        #print(L,"L")
         gomoku.L= [[L[i][j] for j in range(DIMENSION)] for i in range(DIMENSION)]
-        #print(gomoku.L,"gomoku L")
         nbr_None=counting(L)
         if len(L_history_black)>1:
 
@@ -525,8 +520,6 @@ def counting(L):
 counter=0
 
 L_bot= [[L[i][j] for j in range(DIMENSION)] for i in range(DIMENSION)]
-#print(L_bot,"L_bot")
-#print(L)
 L_winrate=[]
 L_winrate_coordonates=[]
 
@@ -553,7 +546,7 @@ def monte_carlo(i,j,counter=0):
 
     """
     global pawn,L_winrate,L_winrate_coordonates,gomoku,L_bot
-    #print(counter)
+        
     winrate=0
     nbr_black=0
     nbr_white=0
@@ -563,9 +556,6 @@ def monte_carlo(i,j,counter=0):
         L_all_coordonates=coordonates_generation()
         L_temp= [[L_bot[i][j] for j in range(DIMENSION)] for i in range(DIMENSION)]
         gomoku.L= [[L_bot[i][j] for j in range(DIMENSION)] for i in range(DIMENSION)]
-
-        #print(gomoku.L)
-        #print(L_temp)
         L_temp[i][j]=pawn
 
 
@@ -577,8 +567,6 @@ def monte_carlo(i,j,counter=0):
 
         for k in range(len(L_all_coordonates)):
 
-            #print(L_temp)
-            #print(pawn)
             L_temp[L_all_coordonates[k][0]][L_all_coordonates[k][1]]=pawn
 
             gomoku.L=[[L_temp[i][j] for j in range(DIMENSION)] for i in range(DIMENSION)]
@@ -591,7 +579,6 @@ def monte_carlo(i,j,counter=0):
 
 
             if pawn=="black":
-               #print(gomoku.L)
                a=gomoku.condition_verticale("black")
                b=gomoku.condition_diagonal("black")
                c=gomoku.condition_horizontal("black")
@@ -599,7 +586,6 @@ def monte_carlo(i,j,counter=0):
                if a!="no vertical" or b!="no diag" or c!="no horizontal":
                   nbr_black+=1
                   pawn="black"
-                  #print(gomoku.L,1)
                   break
 
             elif pawn=="white":
@@ -610,17 +596,11 @@ def monte_carlo(i,j,counter=0):
                     nbr_white+=1
                     winrate+=1
                     pawn="black"
-                    #print(gomoku.L,2)
                     break
 
-            #print(L_temp,"temp",x)
-
-    #print(L_temp)
-    #print(L_bot,"L_bot")
     gomoku.L=[[L_bot[i][j] for j in range(DIMENSION)] for i in range(DIMENSION)]
 
     L_temp=[[L_bot[i][j] for j in range(DIMENSION)] for i in range(DIMENSION)]
-    #print(L_bot,"L")
 
     winrate=int(winrate/15 *100)
     tuple=((i,j),(winrate))
@@ -631,7 +611,6 @@ def monte_carlo(i,j,counter=0):
 
 
 def listage_coordonates(liste_None=[]):
-    #print(L,"L")
     for i in range(len(L)):
         for j in range(len(L)):
             if L[i][j]==None:
@@ -650,8 +629,6 @@ def exec_monte_carlo():
 
     liste_None=liste_None[-lim:]
 
-    #print(liste_None)
-
     for i in liste_None:
         monte_carlo(i[0],i[1])
 
@@ -659,20 +636,15 @@ def exec_monte_carlo():
 
     L_winrate=L_winrate[-lim:]
 
-    #print(L_winrate_coordonates)
-
     for i in L_winrate_coordonates:
-        #print(i)
         a=i[0]
         x=a[0]
         y=a[1]
-        
-        #print(pawn)
+            
         if i[1]==max(L_winrate):
             print(i)
             L_winrate.clear()
             L_winrate_coordonates.clear()
-            #print(L_winrate)
             return(i)
 
 

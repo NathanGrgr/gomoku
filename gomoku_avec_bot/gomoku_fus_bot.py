@@ -77,7 +77,7 @@ L_coordonates_vert=[]
 L_coordonates_hori=[]
 L_coordonates_diag=[]
 
-DIMENSION=15
+DIMENSION=7
 FACT=50 #écart entre chaque case
 LINES=DIMENSION
 WIDTH=FACT*(LINES-1)

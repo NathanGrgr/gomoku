@@ -8,8 +8,9 @@ Se jouant sur un plateau quadrillé virtuel de 15x15,le but sera d'aligner 5 pio
 
 # Contenu du répertoire
 
-|**Fichier**|**Description**|
-|gomoku/gomoku_avec_bot/gomoku_affichage.py| |
-|gomoku/gomoku_avec_bot/gomoku_fus_bot.py  | |
-|gomoku/gomoku_sans_bot/gomoku_affichage.py| |
-|gomoku/gomoku_sans_bot/gomoku_fus.py
+|**Fichier**|**Description**|     
+|---    |:-:    |
+| gomoku/gomoku_avec_bot/gomoku_affichage.py    |       |  
+|gomoku/gomoku_avec_bot/gomoku_fus_bot.py       |       |    
+|gomoku/gomoku_sans_bot/gomoku_affichage.py     |       |      
+|gomoku/gomoku_sans_bot/gomoku_fus.py           |       |

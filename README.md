@@ -10,7 +10,18 @@ Se jouant sur un plateau quadrillé virtuel de 15x15,le but sera d'aligner 5 pio
 
 |**Fichier**|**Description**|     
 |---    |:-:    |
-| gomoku/gomoku_avec_bot/gomoku_affichage.py    |       |  
+|gomoku/gomoku_avec_bot/gomoku_affichage.py    |       |  
 |gomoku/gomoku_avec_bot/gomoku_fus_bot.py       |       |    
 |gomoku/gomoku_sans_bot/gomoku_affichage.py     |       |      
 |gomoku/gomoku_sans_bot/gomoku_fus.py           |       |
+
+
+# Les bibliothèques utilisées 
+
+|**Bibliothèque**|**Description**|     
+|--- |:-:    |
+|Tkinter    |       |  
+|    |       |    
+|    |       |      
+|    |       |
+

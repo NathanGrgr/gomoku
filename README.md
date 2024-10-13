@@ -1,4 +1,5 @@
 # Gomoku
+
 ***
 Le Gomoku, du nom japonais ***gomoku narabe*** signifiant littéralement "alignement des cinq pions", est le nom japonais d'un jeu de plateau chinois, où il est nommé ***Wǔzi qí*** ("l'échiquier des 5") consistant à aligner 5 pions sur les intersections d'un plateau de ***jeu de go*** (ou ***wéiqí, 围棋***)
 Il est également connu en France sous le nom de "**Darpion**"
@@ -44,3 +45,6 @@ Meme si le jeu semble simple, il existe des stratégies complexes que les joueur
 - [x] Blocage de l'adversaire : une bonne défense consiste à bloquer les alignements de l'adversaire avant
 qu'il ne parvienne à placer ses cinq pions.
 ***
+
+Envie d'en faire une partie ? plusieurs site vous permet de jouer dont [gomoku yiyao](gomoku.yjyao.com) que ce soit avec vos amis ou contre un bot qui vous donnera du fil à retordre.
+vous avez meme la possibilité d'apprendre quelques astuces [en cliquant ici](https://fr.boardgamearena.com/doc/Tips_gomoku)
